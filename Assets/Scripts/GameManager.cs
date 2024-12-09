@@ -5,12 +5,13 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     [Header("UI")]
-    [SerializeField] private TextMeshProUGUI timerText; // Текстовый элемент для отображения таймера
+    [SerializeField] private TextMeshProUGUI timerText;
 
     [Header("Game Settings")]
-    [SerializeField] private float timeLimit = 20f; // Ограничение по времени в секундах
-    [SerializeField] private GameObject playerPrefab; // Префаб персонажа
-    [SerializeField] private Transform spawnPoint; // Точка спавна персонажа
+    [SerializeField] private float timeLimit = 20f;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private CameraFollow cameraFollow; // Ссылка на скрипт камеры
 
     private float _timeRemaining;
     private bool _isGameActive;
@@ -20,19 +21,19 @@ public class GameManager : MonoBehaviour
         // Спавн персонажа
         if (playerPrefab != null && spawnPoint != null)
         {
-            Debug.Log("Спавним персонажа...");
-            Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        }
-        else
-        {
-            Debug.LogError("Префаб персонажа или точка спавна не назначены!");
+            GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+
+            // Передача ссылки камеры на персонажа
+            if (cameraFollow != null)
+            {
+                cameraFollow.SetTarget(player.transform);
+            }
         }
 
         // Инициализация таймера
         _timeRemaining = timeLimit;
         _isGameActive = true;
     }
-
 
     private void Update()
     {
@@ -43,7 +44,7 @@ public class GameManager : MonoBehaviour
         if (_timeRemaining <= 0)
         {
             _timeRemaining = 0;
-            EndGame(false); // Проигрыш, если время закончилось
+            EndGame(false);
         }
 
         UpdateTimerUI();
@@ -53,7 +54,7 @@ public class GameManager : MonoBehaviour
     {
         if (_isGameActive)
         {
-            EndGame(true); // Победа, если достиг финиша
+            EndGame(true);
         }
     }
 
@@ -73,14 +74,21 @@ public class GameManager : MonoBehaviour
 
     private void UpdateTimerUI()
     {
-        // Обновляем текст таймера
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
         timerText.text = $"Time Left: {seconds}s";
+
+        if (_timeRemaining <= 10)
+        {
+            timerText.color = Color.red;
+        }
+        else
+        {
+            timerText.color = Color.white;
+        }
     }
 
     public void RestartLevel()
     {
-        // Перезапуск текущего уровня
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
