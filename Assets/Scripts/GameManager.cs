@@ -11,19 +11,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float timeLimit = 20f;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private CameraFollow cameraFollow; // Ссылка на скрипт камеры
+    [SerializeField] private CameraFollow cameraFollow;
 
     private float _timeRemaining;
     private bool _isGameActive;
 
     private void Start()
     {
-        // Спавн персонажа
         if (playerPrefab != null && spawnPoint != null)
         {
             GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-
-            // Передача ссылки камеры на персонажа
             if (cameraFollow != null)
             {
                 cameraFollow.SetTarget(player.transform);
@@ -57,7 +54,6 @@ public class GameManager : MonoBehaviour
             EndGame(true);
         }
     }
-
     private void EndGame(bool isWin)
     {
         _isGameActive = false;
@@ -71,12 +67,17 @@ public class GameManager : MonoBehaviour
             timerText.text = "Time's Up!";
         }
     }
-
     private void UpdateTimerUI()
     {
+        if (_timeRemaining <= 0)
+        {
+            
+            timerText.text = ""; 
+            timerText.gameObject.SetActive(false);
+            return; 
+        }
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
         timerText.text = $"Time Left: {seconds}s";
-
         if (_timeRemaining <= 10)
         {
             timerText.color = Color.red;
@@ -86,7 +87,6 @@ public class GameManager : MonoBehaviour
             timerText.color = Color.white;
         }
     }
-
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
