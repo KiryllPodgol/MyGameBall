@@ -1,20 +1,48 @@
 using UnityEngine;
+
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] private Vector3 offset = new Vector3(0, 5, -10);
-    [SerializeField] private float followSpeed = 5f; 
-    private Transform target;
-    public void SetTarget(Transform newTarget)
+    [SerializeField] private float mouseSensitivity = 100f;
+    [SerializeField] private Vector2 pitchLimits = new Vector2(-45f, 45f);
+    [SerializeField] private float followDistance = 10f;
+    [SerializeField] private float followHeight = 5f;
+    [SerializeField] private float followSpeed = 10f;
+
+    private Transform _target;
+    private float _yaw = 0f;
+    private float _pitch = 0f;
+
+    private void Start()
     {
-        target = newTarget;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void FixedUpdate()
     {
-        if (target == null) return; 
-        Vector3 targetPosition = target.position + offset;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
+        if (_target == null) return;
 
-        transform.LookAt(target);
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        _yaw += mouseX;
+        _pitch -= mouseY;
+        _pitch = Mathf.Clamp(_pitch, pitchLimits.x, pitchLimits.y);
+
+        Vector3 desiredPosition = _target.position - Quaternion.Euler(0f, _yaw, 0f) * Vector3.forward * followDistance;
+        desiredPosition.y = _target.position.y + followHeight;
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
+
+        transform.LookAt(_target.position + Vector3.up * 1f);
+    }
+
+    public void SetTarget(Transform target)
+    {
+        _target = target;
+    }
+
+    public Quaternion GetCameraRotation()
+    {
+        return Quaternion.Euler(0, _yaw, 0);
     }
 }
