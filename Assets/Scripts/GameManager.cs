@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -7,6 +8,7 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
     [Header("Game Settings")]
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private float timeLimit = 20f;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform spawnPoint;
@@ -24,13 +26,18 @@ public class GameManager : MonoBehaviour
         {
             _player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
 
+            if (virtualCamera != null)
+            {
+                virtualCamera.Follow = _player.transform;
+                virtualCamera.LookAt = _player.transform;
+            }
+
             if (cameraFollow != null)
             {
                 cameraFollow.SetTarget(_player.transform);
             }
         }
 
-      
         _timeRemaining = timeLimit;
         _isGameActive = true;
     }
@@ -80,14 +87,7 @@ public class GameManager : MonoBehaviour
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
         timerText.text = $"Time Left: {seconds}s";
 
-        if (_timeRemaining <= 10)
-        {
-            timerText.color = Color.red;
-        }
-        else
-        {
-            timerText.color = Color.white;
-        }
+        timerText.color = _timeRemaining <= 10 ? Color.red : Color.white;
     }
 
     public void RestartLevel()

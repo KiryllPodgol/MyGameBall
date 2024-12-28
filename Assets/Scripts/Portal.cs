@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour
 {
-    [SerializeField] private string nextLevelName; // Имя следующей сцены
+    [SerializeField] private string nextLevelName;
     [SerializeField] private int nextLevelIndex = -1;
 
     private void OnTriggerEnter(Collider other)
