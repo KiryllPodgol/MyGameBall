@@ -14,10 +14,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private CameraFollow cameraFollow;
     [Header("Portal Settings")]
-    [SerializeField] private Transform portalZone; 
+    [SerializeField] private Transform portalZone;
+    [Header("Timer Settings")]
+    [SerializeField] private float timerStartDelay = 5f; 
 
     private float _timeRemaining;
     private bool _isGameActive;
+    private bool _isTimerActive;
     private GameObject _player;
 
     private void Start()
@@ -37,20 +40,20 @@ public class GameManager : MonoBehaviour
                 cameraFollow.SetTarget(_player.transform);
             }
         }
-
         _timeRemaining = timeLimit;
         _isGameActive = true;
+        _isTimerActive = false;
+        Invoke(nameof(StartTimer), timerStartDelay);
+        UpdateTimerUI();
     }
 
     private void Update()
     {
-        if (!_isGameActive) return;
-
-        // Проверяем, достиг ли игрок зоны портала
+        if (!_isGameActive || !_isTimerActive) return;
         if (HasReachedPortal())
         {
             EndGame(true);
-            return; // Выходим, чтобы остановить дальнейшие обновления
+            return;
         }
 
         _timeRemaining -= Time.deltaTime;
@@ -64,30 +67,39 @@ public class GameManager : MonoBehaviour
         UpdateTimerUI();
     }
 
+    private void StartTimer()
+    {
+        _isTimerActive = true;
+        Debug.Log("Timer started!");
+    }
+
     private void EndGame(bool isWin)
     {
         _isGameActive = false;
+        _isTimerActive = false;
 
         if (isWin)
         {
             timerText.text = "You Win!";
-            timerText.color = Color.green; 
+            timerText.color = Color.green;
         }
         else
         {
             timerText.text = "Time's Up!";
-            RestartLevel(); // Перезапускаем уровень
+            RestartLevel(); 
         }
     }
 
     private void UpdateTimerUI()
     {
-        if (!_isGameActive) return; 
+        if (!_isGameActive) return;
 
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
-        timerText.text = $"Time Left: {seconds}s";
+        timerText.text = !_isTimerActive 
+            ? $"Timer starts in {Mathf.CeilToInt(timerStartDelay)}s" 
+            : $"Time Left: {seconds}s";
 
-        timerText.color = _timeRemaining <= 10 ? Color.red : Color.white;
+        timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }
 
     public void RestartLevel()
@@ -99,10 +111,7 @@ public class GameManager : MonoBehaviour
     {
         if (_player == null || portalZone == null) return false;
 
-        // Рассчитываем дистанцию между игроком и зоной портала
         float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
-
-        // Проверяем, находится ли игрок в пределах радиуса зоны портала
-        return distanceToPortal <= 1f; // Радиус зоны — 1 единица
+        return distanceToPortal <= 1f;
     }
 }
