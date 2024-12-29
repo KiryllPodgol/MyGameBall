@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform portalZone;
     [Header("Timer Settings")]
     [SerializeField] private float timerStartDelay = 5f; 
-
     private float _timeRemaining;
     private bool _isGameActive;
     private bool _isTimerActive;
@@ -50,12 +49,22 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (!_isGameActive || !_isTimerActive) return;
+
+        // Проверка на достижение портала
         if (HasReachedPortal())
         {
             EndGame(true);
             return;
         }
 
+        // Проверка на падение в пропасть
+        if (HasPlayerFallen())
+        {
+            RestartLevel();
+            return;
+        }
+
+        // Таймер обратного отсчета
         _timeRemaining -= Time.deltaTime;
 
         if (_timeRemaining <= 0)
@@ -66,7 +75,19 @@ public class GameManager : MonoBehaviour
 
         UpdateTimerUI();
     }
+    private bool HasPlayerFallen()
+    {
+        // Уровень, ниже которого игрок считается упавшим
+        const float fallThreshold = -10f; 
 
+        if (_player != null && _player.transform.position.y < fallThreshold)
+        {
+            Debug.Log("Player has fallen!");
+            return true;
+        }
+
+        return false;
+    }
     private void StartTimer()
     {
         _isTimerActive = true;
