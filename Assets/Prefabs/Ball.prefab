@@ -104,7 +104,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   gravity: -9.81
+  jumpForce: 15
   rotationSpeed: 10
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  groundCheckDistance: 2
 --- !u!54 &7894654596945670788
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -167,4 +172,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   gravity: -9.81
+  jumpForce: 5
   rotationSpeed: 10
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  groundCheckDistance: 1
