@@ -679,7 +679,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 64.9, y: -62.9}
+  m_AnchoredPosition: {x: 64.8999, y: -62.900024}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &403958524
@@ -5158,11 +5158,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 632194163}
-  virtualCamera: {fileID: 0}
-  timeLimit: 20
+  timeLimit: 15
   playerPrefab: {fileID: 773275024952955596, guid: eed6d8ae46ca77843922a5ed5c9234b3, type: 3}
   spawnPoint: {fileID: 388030912}
   cameraFollow: {fileID: 330585548}
+  stopTimerDistance: 15
   portalZone: {fileID: 1598834342}
   timerStartDelay: 5
 --- !u!4 &1986166078

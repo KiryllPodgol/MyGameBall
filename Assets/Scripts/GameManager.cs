@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
     [Header("Game Settings")]
-    [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private float timeLimit = 20f;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform spawnPoint;
@@ -29,12 +28,7 @@ public class GameManager : MonoBehaviour
         if (playerPrefab != null && spawnPoint != null)
         {
             _player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-
-            if (virtualCamera != null)
-            {
-                virtualCamera.Follow = _player.transform;
-                virtualCamera.LookAt = _player.transform;
-            }
+            
 
             if (cameraFollow != null)
             {
@@ -120,7 +114,6 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(timerStartDelay);  // Ожидаем время задержки
         ToggleTimer(true); 
     }
-
     private void EndGame(bool isWin)
     {
         _isGameActive = false;
