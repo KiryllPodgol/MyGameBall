@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 using Unity.Cinemachine;
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private CameraFollow cameraFollow;
     [Header("Portal Settings")]
+    [SerializeField] private float stopTimerDistance = 3f; // Расстояние для остановки таймера
     [SerializeField] private Transform portalZone;
     [Header("Timer Settings")]
     [SerializeField] private float timerStartDelay = 5f; 
@@ -42,21 +44,27 @@ public class GameManager : MonoBehaviour
         _timeRemaining = timeLimit;
         _isGameActive = true;
         _isTimerActive = false;
-        Invoke(nameof(StartTimer), timerStartDelay);
+        StartCoroutine(StartTimerWithDelay()); // вот тут ошибка!!!
         UpdateTimerUI();
     }
 
     private void Update()
     {
-        if (!_isGameActive || !_isTimerActive) return;
+        if (!_isGameActive) return;
 
-        // Проверка на достижение портала
+        // Проверка на достижение портала (если игрок уже в 1м от портала)
         if (HasReachedPortal())
         {
             EndGame(true);
             return;
         }
 
+        // Проверка на близость к порталу
+        if (HasPlayerNearPortal())
+        {
+            ToggleTimer(false); // Останавливаем таймер, если игрок близко к порталу
+        }
+    
         // Проверка на падение в пропасть
         if (HasPlayerFallen())
         {
@@ -64,7 +72,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // Таймер обратного отсчета
+        if (!_isTimerActive) return;
+
         _timeRemaining -= Time.deltaTime;
 
         if (_timeRemaining <= 0)
@@ -75,9 +84,9 @@ public class GameManager : MonoBehaviour
 
         UpdateTimerUI();
     }
+
     private bool HasPlayerFallen()
     {
-        // Уровень, ниже которого игрок считается упавшим
         const float fallThreshold = -10f; 
 
         if (_player != null && _player.transform.position.y < fallThreshold)
@@ -85,13 +94,31 @@ public class GameManager : MonoBehaviour
             Debug.Log("Player has fallen!");
             return true;
         }
-
         return false;
     }
-    private void StartTimer()
+    private void ToggleTimer(bool isActive)
     {
-        _isTimerActive = true;
-        Debug.Log("Timer started!");
+        if (isActive)
+        {
+            if (!_isTimerActive) // Проверяем, если таймер еще не активирован
+            {
+                _isTimerActive = true;
+                Debug.Log("Timer started!");
+            }
+        }
+        else
+        {
+            if (_isTimerActive) // Проверяем, если таймер уже активирован
+            {
+                _isTimerActive = false;
+                Debug.Log("Timer stopped because player is near the portal!");
+            }
+        }
+    }
+    private IEnumerator StartTimerWithDelay()
+    {
+        yield return new WaitForSeconds(timerStartDelay);  // Ожидаем время задержки
+        ToggleTimer(true); 
     }
 
     private void EndGame(bool isWin)
@@ -110,7 +137,6 @@ public class GameManager : MonoBehaviour
             RestartLevel(); 
         }
     }
-
     private void UpdateTimerUI()
     {
         if (!_isGameActive) return;
@@ -122,12 +148,20 @@ public class GameManager : MonoBehaviour
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }
+    
 
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+    private bool HasPlayerNearPortal()
+    {
+        if (_player == null || portalZone == null) return false;
 
+        float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
+        Debug.Log("Distance to portal: " + distanceToPortal);
+        return distanceToPortal <= stopTimerDistance; 
+    }
     private bool HasReachedPortal()
     {
         if (_player == null || portalZone == null) return false;
