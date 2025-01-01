@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI levelTitleText; // Текстовое поле для названия уровня
     [Header("Game Settings")]
     [SerializeField] private float timeLimit = 20f;
     [SerializeField] private GameObject playerPrefab;
@@ -24,20 +25,23 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Устанавливаем название уровня
+        SetLevelTitle();
+
         if (playerPrefab != null && spawnPoint != null)
         {
             _player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-            
 
             if (cameraFollow != null)
             {
                 cameraFollow.SetTarget(_player.transform);
             }
         }
+
         _timeRemaining = timeLimit;
         _isGameActive = true;
         _isTimerActive = false;
-        StartCoroutine(StartTimerWithDelay()); // вот тут ошибка!!!
+        StartCoroutine(StartTimerWithDelay());
         UpdateTimerUI();
     }
 
@@ -78,6 +82,18 @@ public class GameManager : MonoBehaviour
         UpdateTimerUI();
     }
 
+    private void SetLevelTitle()
+    {
+        if (levelTitleText == null)
+        {
+            Debug.LogError("LevelTitleText reference is missing. Please assign it in the inspector.");
+            return;
+        }
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        levelTitleText.text = $"Level: {sceneName}";
+    }
+
     private bool HasPlayerFallen()
     {
         const float fallThreshold = -10f; 
@@ -89,11 +105,12 @@ public class GameManager : MonoBehaviour
         }
         return false;
     }
+
     private void ToggleTimer(bool isActive)
     {
         if (isActive)
         {
-            if (!_isTimerActive) // Проверяем, если таймер еще не активирован
+            if (!_isTimerActive)
             {
                 _isTimerActive = true;
                 Debug.Log("Timer started!");
@@ -101,18 +118,20 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (_isTimerActive) // Проверяем, если таймер уже активирован
+            if (_isTimerActive)
             {
                 _isTimerActive = false;
                 Debug.Log("Timer stopped because player is near the portal!");
             }
         }
     }
+
     private IEnumerator StartTimerWithDelay()
     {
-        yield return new WaitForSeconds(timerStartDelay);  // Ожидаем время задержки
+        yield return new WaitForSeconds(timerStartDelay); 
         ToggleTimer(true); 
     }
+
     private void EndGame(bool isWin)
     {
         _isGameActive = false;
@@ -129,23 +148,24 @@ public class GameManager : MonoBehaviour
             RestartLevel(); 
         }
     }
+
     private void UpdateTimerUI()
     {
         if (!_isGameActive) return;
 
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
         timerText.text = !_isTimerActive 
-            ? $"Timer starts in {Mathf.CeilToInt(timerStartDelay)}s" 
+            ? $"Starts in {Mathf.CeilToInt(timerStartDelay)}s" 
             : $"Time Left: {seconds}s";
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }
-    
 
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
     private bool HasPlayerNearPortal()
     {
         if (_player == null || portalZone == null) return false;
@@ -154,6 +174,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Distance to portal: " + distanceToPortal);
         return distanceToPortal <= stopTimerDistance; 
     }
+
     private bool HasReachedPortal()
     {
         if (_player == null || portalZone == null) return false;
