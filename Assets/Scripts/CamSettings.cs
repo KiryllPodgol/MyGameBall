@@ -9,4 +9,5 @@ public class CameraSettings
     public float followHeight = 40f; 
     public float followSpeed = 50f; 
     public float cameraRadius = 0.5f;
+    public LayerMask obstacleLayers;
 }

@@ -73,6 +73,11 @@ public class CameraFollow : MonoBehaviour
         get { return followHeight; }
         set { followHeight = value; }
     }
+    public LayerMask ObstacleLayers
+    {
+        get { return obstacleLayers; }
+        set { obstacleLayers = value; }
+    }
 
     public void SetTarget(Transform target)
     {
