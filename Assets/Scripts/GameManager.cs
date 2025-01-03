@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
         // Устанавливаем название уровня
         SetLevelTitle();
 
+        // Проверяем, что префаб игрока и точка спауна указаны
         if (playerPrefab != null && spawnPoint != null)
         {
             _player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
@@ -38,18 +39,20 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        _timeRemaining = timeLimit;
+        // Инициализация времени на основе значения из инспектора
+        _timeRemaining = timeLimit;  // Используйте значение timeLimit из инспектора
         _isGameActive = true;
         _isTimerActive = false;
         StartCoroutine(StartTimerWithDelay());
         UpdateTimerUI();
     }
 
+
     private void Update()
     {
         if (!_isGameActive) return;
 
-        // Проверка на достижение портала (если игрок уже в 1м от портала)
+        // Проверка на достижение портала
         if (HasReachedPortal())
         {
             EndGame(true);
@@ -73,6 +76,9 @@ public class GameManager : MonoBehaviour
 
         _timeRemaining -= Time.deltaTime;
 
+        // Логирование текущего времени
+        Debug.Log("Time Remaining: " + _timeRemaining);
+
         if (_timeRemaining <= 0)
         {
             _timeRemaining = 0;
@@ -81,6 +87,7 @@ public class GameManager : MonoBehaviour
 
         UpdateTimerUI();
     }
+
 
     private void SetLevelTitle()
     {
@@ -153,13 +160,16 @@ public class GameManager : MonoBehaviour
     {
         if (!_isGameActive) return;
 
+        int minutes = Mathf.FloorToInt(_timeRemaining / 60);
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
+    
         timerText.text = !_isTimerActive 
             ? $"Starts in {Mathf.CeilToInt(timerStartDelay)}s" 
-            : $"Time Left: {seconds}s";
+            : $"Time Left: {minutes}m {seconds}s";
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }
+
 
     public void RestartLevel()
     {

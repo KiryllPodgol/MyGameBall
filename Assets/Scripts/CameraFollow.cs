@@ -51,7 +51,17 @@ public class CameraFollow : MonoBehaviour
         
         return false; 
     }
-    
+    public float MouseSensitivity
+    {
+        get { return mouseSensitivity; }
+        set { mouseSensitivity = value; } 
+    }
+
+    public float FollowSpeed
+    {
+        get { return followSpeed; }
+        set { followSpeed = value; } 
+    }
     public float FollowDistance
     {
         get { return followDistance; }
