@@ -12,8 +12,7 @@ public class SceneTransition : MonoBehaviour
     private static bool ShouldPlayOpeningAnimation = false;
     private AsyncOperation loadingSceneOperation;
     private Animator componentAnimator;
-
-    public static void SwitchToScene(string sceneName)
+    public static void SwitchToScene(int sceneIndex)
     {
         if (_instance == null)
         {
@@ -22,7 +21,7 @@ public class SceneTransition : MonoBehaviour
         }
 
         _instance.componentAnimator.SetTrigger("SceneClosing");
-        _instance.loadingSceneOperation = SceneManager.LoadSceneAsync(sceneName);
+        _instance.loadingSceneOperation = SceneManager.LoadSceneAsync(sceneIndex);
         _instance.loadingSceneOperation.allowSceneActivation = false;
     }
 
