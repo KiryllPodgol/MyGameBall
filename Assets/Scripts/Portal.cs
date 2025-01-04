@@ -8,7 +8,7 @@ public class Portal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<Ball>() != null)
+        if (other.GetComponent<Ball>() != null) 
         {
             LoadNextLevel();
         }
@@ -18,11 +18,13 @@ public class Portal : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(nextLevelName))
         {
-            SceneTransition.SwitchToScene(nextLevelName);
+            // Загрузка по имени сцены
+            SceneManager.LoadScene(nextLevelName);
         }
         else if (nextLevelIndex >= 0)
         {
-            SceneTransition.SwitchToScene(SceneManager.GetSceneByBuildIndex(nextLevelIndex).name);
+            // Загрузка по индексу
+            SceneManager.LoadScene(nextLevelIndex);
         }
         else
         {

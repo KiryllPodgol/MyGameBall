@@ -1,4 +1,4 @@
-using UnityEngine;
+using UnityEngine; 
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -83,7 +83,7 @@ public class MenuManager : MonoBehaviour
     {
         if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            SceneTransition.SwitchToScene(SceneManager.GetSceneByBuildIndex(sceneIndex).name);
+            SceneManager.LoadScene(sceneIndex);
         }
         else
         {
