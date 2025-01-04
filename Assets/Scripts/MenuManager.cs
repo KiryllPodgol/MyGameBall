@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private AudioSource musicSource;
-    [SerializeField] private Slider volumeSlider; 
+    [SerializeField] private Slider volumeSlider;
     [SerializeField] private GameObject pauseMenu;
     private InputAsset _input;
     private bool isPaused = false;
+
     private void Awake()
     {
         _input = new InputAsset();
@@ -18,12 +19,13 @@ public class MenuManager : MonoBehaviour
             volumeSlider.value = musicSource.volume;
             volumeSlider.onValueChanged.AddListener(MusicVolume);
         }
-        
+
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
     }
+
     private void OnEnable()
     {
         _input.UI.Pause.performed += OnPausePressed;
@@ -39,6 +41,7 @@ public class MenuManager : MonoBehaviour
             volumeSlider.onValueChanged.RemoveListener(MusicVolume);
         }
     }
+
     private void OnPausePressed(InputAction.CallbackContext context)
     {
         TogglePause();
@@ -51,12 +54,14 @@ public class MenuManager : MonoBehaviour
             musicSource.volume = volume;
         }
     }
+
     public void ExitApplication()
     {
         Application.Quit();
     }
+
     public void TogglePause()
-    {  
+    {
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
 
@@ -75,15 +80,16 @@ public class MenuManager : MonoBehaviour
 
         if (pauseMenu != null)
         {
-            pauseMenu.SetActive(isPaused); 
+            pauseMenu.SetActive(isPaused);
             Debug.Log($"Pause menu is now {(isPaused ? "active" : "inactive")}.");
         }
     }
+
     public void LoadScene(int sceneIndex)
     {
         if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            SceneManager.LoadScene(sceneIndex);
+            SceneTransition.SwitchToScene(SceneManager.GetSceneByBuildIndex(sceneIndex).name);
         }
         else
         {

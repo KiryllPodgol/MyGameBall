@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class TopViewComponent : MonoBehaviour
@@ -59,20 +60,12 @@ public class TopViewComponent : MonoBehaviour
     {
         if (_cameraFollow != null && !_isTopView)
         {
-            // Устанавливаем параметры для вида сверху из cameraSettings
-            _cameraFollow.FollowHeight = cameraSettings.followHeight;
-            _cameraFollow.FollowDistance = cameraSettings.followDistance;
-
-            // Отключаем чувствительность мыши и устанавливаем скорость следования
+            StartCoroutine(SmoothTransition(cameraSettings.followHeight, cameraSettings.followDistance, cameraSettings.followSpeed, 1f)); // 1 секунда для перехода
             _cameraFollow.MouseSensitivity = 0f; 
-            _cameraFollow.FollowSpeed = cameraSettings.followSpeed; // Установите скорость следования из настроек камеры
-            
-            // Устанавливаем слои препятствий из cameraSettings (например, "Nothing")
             _cameraFollow.ObstacleLayers = cameraSettings.obstacleLayers;
 
             Debug.Log("Mouse sensitivity set to 0 for Top View.");
-            Debug.Log($"Follow speed set to {cameraSettings.followSpeed} for Top View.");
-            
+        
             _isTopView = true;
         }
     }
@@ -81,21 +74,41 @@ public class TopViewComponent : MonoBehaviour
     {
         if (_cameraFollow != null && _isTopView)
         {
-            // Восстанавливаем оригинальные параметры
-            _cameraFollow.FollowHeight = _originalFollowHeight;
-            _cameraFollow.FollowDistance = _originalFollowDistance;
-
-            // Восстанавливаем оригинальную чувствительность мыши и скорость следования
+            StartCoroutine(SmoothTransition(_originalFollowHeight, _originalFollowDistance, _originalFollowSpeed, 1f)); // 1 секунда для перехода
             _cameraFollow.MouseSensitivity = _originalMouseSensitivity; 
-            _cameraFollow.FollowSpeed = _originalFollowSpeed; 
-
-            // Восстанавливаем оригинальные слои препятствий
             _cameraFollow.ObstacleLayers = _originalObstacleLayers;
 
             Debug.Log($"Mouse sensitivity restored to {_originalMouseSensitivity}.");
-            Debug.Log($"Follow speed restored to {_originalFollowSpeed}.");
-            
+        
             _isTopView = false;
         }
     }
+
+    private IEnumerator SmoothTransition(float targetHeight, float targetDistance, float targetSpeed, float duration)
+    {
+        float elapsedTime = 0f;
+
+        float startHeight = _cameraFollow.FollowHeight;
+        float startDistance = _cameraFollow.FollowDistance;
+        float startSpeed = _cameraFollow.FollowSpeed;
+
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+
+            // Интерполяция значений
+            _cameraFollow.FollowHeight = Mathf.Lerp(startHeight, targetHeight, t);
+            _cameraFollow.FollowDistance = Mathf.Lerp(startDistance, targetDistance, t);
+            _cameraFollow.FollowSpeed = Mathf.Lerp(startSpeed, targetSpeed, t);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+
+        // Убедитесь, что конечные значения установлены
+        _cameraFollow.FollowHeight = targetHeight;
+        _cameraFollow.FollowDistance = targetDistance;
+        _cameraFollow.FollowSpeed = targetSpeed;
+    }
+
 }
