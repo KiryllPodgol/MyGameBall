@@ -83,7 +83,7 @@ public class MenuManager : MonoBehaviour
     {
         if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            SceneManager.LoadScene(sceneIndex);
+            SceneTransition.SwitchToScene(SceneManager.GetSceneByBuildIndex(sceneIndex).name);
         }
         else
         {
