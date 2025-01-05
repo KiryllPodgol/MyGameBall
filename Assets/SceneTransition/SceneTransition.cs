@@ -45,10 +45,12 @@ public class SceneTransition : MonoBehaviour
     {
         if (loadingSceneOperation != null)
         {
-            LoadingProcentage.text = Mathf.RoundToInt(loadingSceneOperation.progress * 100) + "%";
-            LoadingProgress.fillAmount = loadingSceneOperation.progress;
+            float progress = Mathf.Clamp01(loadingSceneOperation.progress / 0.9f);
+            LoadingProcentage.text = Mathf.RoundToInt(progress * 100) + "%";
+            LoadingProgress.fillAmount = progress;
         }
     }
+
 
     public void OnAnimationOver()
     {
