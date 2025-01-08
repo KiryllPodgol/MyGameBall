@@ -16,15 +16,14 @@ public class Portal : MonoBehaviour
 
     private void LoadNextLevel()
     {
-        // Если задано имя сцены, используем его для перехода
         if (!string.IsNullOrEmpty(nextLevelName))
         {
-            int sceneIndex = SceneManager.GetSceneByName(nextLevelName).buildIndex;
-            SceneTransition.SwitchToScene(sceneIndex);
+            Debug.Log($"Переход на уровень: {nextLevelName}");
+            SceneTransition.SwitchToScene(SceneManager.GetSceneByName(nextLevelName).buildIndex);
         }
-        // Если задан индекс сцены, используем его напрямую
         else if (nextLevelIndex >= 0)
         {
+            Debug.Log($"Переход на уровень с индексом: {nextLevelIndex}");
             SceneTransition.SwitchToScene(nextLevelIndex);
         }
         else

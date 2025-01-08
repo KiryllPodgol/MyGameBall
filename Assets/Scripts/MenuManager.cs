@@ -84,8 +84,6 @@ public class MenuManager : MonoBehaviour
             Debug.Log($"Pause menu is now {(isPaused ? "active" : "inactive")}.");
         }
     }
-    
-
     public void LoadScene(int sceneIndex)
     {
         if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
