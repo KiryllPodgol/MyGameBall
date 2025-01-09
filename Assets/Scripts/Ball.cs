@@ -27,7 +27,7 @@ public class Ball : MonoBehaviour
         else
         {
             Debug.LogError("Main Camera not found! Please assign a camera with the CameraFollow script.");
-            enabled = false; 
+            enabled = false;
         }
 
     }
@@ -40,7 +40,7 @@ public class Ball : MonoBehaviour
         _input.Gameplay.Jump.performed += JumpOnperformed;
         _input.Gameplay.Jump.canceled += JumpOnperformed;
     }
-    
+
     private void OnDisable()
     {
         _input.Gameplay.Move.performed -= OnMovePerformed;
@@ -60,15 +60,21 @@ public class Ball : MonoBehaviour
     {
         _moveDirection = Vector3.zero;
     }
-    
+
     private void JumpOnperformed(InputAction.CallbackContext obj)
     {
-        Debug.Log("Jump key pressed");
         if (_isGrounded)
         {
-            _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            var jumpDirection = Vector3.up; // По умолчанию прыжок вверх
+            if (_contactNormal != Vector3.zero)
+            {
+                jumpDirection = _contactNormal.normalized; 
+            }
+
+            _rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
         }
     }
+
     private void FixedUpdate()
     {
         CheckGround();
@@ -79,6 +85,7 @@ public class Ball : MonoBehaviour
 
         // Движение
         Vector3 force = globalMoveDirection * moveSpeed;
+
         _rb.AddForce(force, ForceMode.Acceleration);
 
         // Гравитация
@@ -91,13 +98,42 @@ public class Ball : MonoBehaviour
             _rb.AddTorque(torque, ForceMode.Acceleration);
         }
     }
+
+    private Vector3 _contactNormal;
+
+    private void OnCollisionEnter(Collision other)
+    {
+        _contactNormal = other.contacts[0].normal;
+    }
+
     private void CheckGround()
     {
         RaycastHit hit;
-        // Проверяем наличие земли под объектом с использованием Raycast
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance, groundLayer);
 
-        // Для отладки можно добавить линию визуализации
+        if (_isGrounded)
+        {
+            _contactNormal = hit.normal;
+        }
+        else
+        {
+            _contactNormal = Vector3.zero;
+        }
+
+        // Отрисовка для отладки
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, _isGrounded ? Color.green : Color.red);
+        if (_isGrounded)
+        {
+            Debug.DrawRay(hit.point, hit.normal, Color.blue);
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        if (_isGrounded && _contactNormal != Vector3.zero)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, transform.position + _contactNormal);
+            Gizmos.DrawSphere(transform.position + _contactNormal, 0.1f);
+        }
     }
 }

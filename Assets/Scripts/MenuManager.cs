@@ -88,11 +88,11 @@ public class MenuManager : MonoBehaviour
     {
         if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            SceneTransition.SwitchToScene(sceneIndex);
+            // Используем метод для переключения через сцену-подложку
+            SceneTransition.SwitchSceneWithLoading(sceneIndex);
         }
         else
         {
             Debug.LogError("Scene index out of range!");
         }
     }
-}
