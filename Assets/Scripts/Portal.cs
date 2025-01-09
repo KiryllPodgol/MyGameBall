@@ -1,18 +1,3 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-
-public class Portal : MonoBehaviour
-{
-    [SerializeField] private string nextLevelName;
-    [SerializeField] private int nextLevelIndex = -1;
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.GetComponent<Ball>() != null)
-        {
-            LoadNextLevel();
-        }
-    }
 
     using UnityEngine;
     using UnityEngine.SceneManagement;
