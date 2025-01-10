@@ -25,10 +25,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Устанавливаем название уровня
         SetLevelTitle();
-
-        // Проверяем, что префаб игрока и точка спауна указаны
+        
         if (playerPrefab != null && spawnPoint != null)
         {
             _player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
@@ -38,9 +36,8 @@ public class GameManager : MonoBehaviour
                 cameraFollow.SetTarget(_player.transform);
             }
         }
-
-        // Инициализация времени на основе значения из инспектора
-        _timeRemaining = timeLimit;  // Используйте значение timeLimit из инспектора
+        
+        _timeRemaining = timeLimit;
         _isGameActive = true;
         _isTimerActive = false;
         StartCoroutine(StartTimerWithDelay());
@@ -71,14 +68,8 @@ public class GameManager : MonoBehaviour
             RestartLevel();
             return;
         }
-
         if (!_isTimerActive) return;
-
         _timeRemaining -= Time.deltaTime;
-
-        // Логирование текущего времени
-        Debug.Log("Time Remaining: " + _timeRemaining);
-
         if (_timeRemaining <= 0)
         {
             _timeRemaining = 0;
@@ -103,12 +94,19 @@ public class GameManager : MonoBehaviour
 
     private bool HasPlayerFallen()
     {
-        const float fallThreshold = -10f; 
+        const float fallThreshold = -10f;
+        const float raycastDistance = 1.5f;
+        LayerMask groundMask = LayerMask.GetMask("Ground");
 
-        if (_player != null && _player.transform.position.y < fallThreshold)
+        if (_player != null)
         {
-            Debug.Log("Player has fallen!");
-            return true;
+            if (_player.transform.position.y < fallThreshold)
+            {
+                if (!Physics.Raycast(_player.transform.position, Vector3.down, raycastDistance, groundMask))
+                {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -120,7 +118,6 @@ public class GameManager : MonoBehaviour
             if (!_isTimerActive)
             {
                 _isTimerActive = true;
-                Debug.Log("Timer started!");
             }
         }
         else
@@ -128,7 +125,6 @@ public class GameManager : MonoBehaviour
             if (_isTimerActive)
             {
                 _isTimerActive = false;
-                Debug.Log("Timer stopped because player is near the portal!");
             }
         }
     }
@@ -169,10 +165,9 @@ public class GameManager : MonoBehaviour
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }
-
-
     public void RestartLevel()
-    {
+    { 
+        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -181,10 +176,8 @@ public class GameManager : MonoBehaviour
         if (_player == null || portalZone == null) return false;
 
         float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
-        Debug.Log("Distance to portal: " + distanceToPortal);
         return distanceToPortal <= stopTimerDistance; 
     }
-
     private bool HasReachedPortal()
     {
         if (_player == null || portalZone == null) return false;
