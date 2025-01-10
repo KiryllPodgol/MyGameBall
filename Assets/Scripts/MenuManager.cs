@@ -35,11 +35,11 @@ public class MenuManager : MonoBehaviour
     private void OnDisable()
     {
         _input.UI.Pause.performed -= OnPausePressed;
-        _input.UI.Disable();
         if (volumeSlider != null)
         {
             volumeSlider.onValueChanged.RemoveListener(MusicVolume);
         }
+        _input.UI.Disable();
     }
 
     private void OnPausePressed(InputAction.CallbackContext context)

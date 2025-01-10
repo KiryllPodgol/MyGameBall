@@ -4,8 +4,8 @@
 
     public class Portal : MonoBehaviour
     {
-        [SerializeField] private string nextLevelName; // Имя следующей сцены
-        [SerializeField] private int nextLevelIndex = -1; // Индекс следующей сцены
+        [SerializeField] private string nextLevelName; 
+        [SerializeField] private int nextLevelIndex = -1; 
 
         private void OnTriggerEnter(Collider other)
         {
@@ -17,20 +17,20 @@
         }
         private void LoadNextLevel()
         {
-            if (!string.IsNullOrEmpty(nextLevelName)) // Если указано имя сцены
+            if (!string.IsNullOrEmpty(nextLevelName))
             {
                 Debug.Log($"Переход на уровень: {nextLevelName}");
                 int sceneIndex = SceneManager.GetSceneByName(nextLevelName).buildIndex;
                 if (sceneIndex >= 0)
                 {
-                    SceneTransition.SwitchSceneWithLoading(sceneIndex); // Загрузка через сцену-подложку
+                    SceneTransition.SwitchSceneWithLoading(sceneIndex); 
                 }
                 else
                 {
                     Debug.LogError($"Сцена с именем {nextLevelName} не найдена в Build Settings!");
                 }
             }
-            else if (nextLevelIndex >= 0) // Если указан индекс сцены
+            else if (nextLevelIndex >= 0)
             {
                 Debug.Log($"Переход на уровень с индексом: {nextLevelIndex}");
                 SceneTransition.SwitchSceneWithLoading(nextLevelIndex); // Загрузка через сцену-подложку

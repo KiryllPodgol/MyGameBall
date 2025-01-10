@@ -5,13 +5,13 @@ public class Ball : MonoBehaviour
 {
     private InputAsset _input;
     private Rigidbody _rb;
-    [SerializeField] private float moveSpeed = 5f; // Скорость движения
-    [SerializeField] private float runMultiplier = 2f; // Умножитель скорости при беге
+    [SerializeField] private float moveSpeed = 5f; 
+    [SerializeField] private float runMultiplier = 2f;
     [SerializeField] private float gravity = -9.81f; // Сила гравитации
-    [SerializeField] private float jumpForce = 5f; // Силла прыжка
-    [SerializeField] private float rotationSpeed = 10f; // Скорость вращения шарика
-    [SerializeField] private LayerMask groundLayer; // Слой для земли
-    [SerializeField] private float groundCheckDistance = 1f; // Дистанция проверки земли
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float rotationSpeed = 10f; 
+    [SerializeField] private LayerMask groundLayer; 
+    [SerializeField] private float groundCheckDistance = 1f;
     private Vector3 _moveDirection;
     private CameraFollow _cameraFollow;
     private bool _isGrounded;

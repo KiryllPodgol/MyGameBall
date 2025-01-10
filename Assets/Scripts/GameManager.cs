@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] private TextMeshProUGUI levelTitleText; // Текстовое поле для названия уровня
+    [SerializeField] private TextMeshProUGUI levelTitleText;
     [Header("Game Settings")]
     [SerializeField] private float timeLimit = 20f;
     [SerializeField] private GameObject playerPrefab;

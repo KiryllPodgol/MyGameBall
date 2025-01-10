@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b22f795ed1f0bd145b6e706155a3f63d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LoadingProcentage: {fileID: 3781500368925814279}
+  LoadingPercentage: {fileID: 3781500368925814279}
   LoadingProgress: {fileID: 3375071232456901687}
 --- !u!1 &6676917664468547475
 GameObject:
