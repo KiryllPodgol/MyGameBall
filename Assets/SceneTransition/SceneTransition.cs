@@ -6,89 +6,102 @@ using UnityEngine.UI;
 
 public class SceneTransition : MonoBehaviour
 {
-    public TextMeshProUGUI LoadingPercentage; // Текст процента загрузки
-    public Image LoadingProgress;            // Прогресс-бар
+    public TextMeshProUGUI LoadingPercentage;
+    public Image LoadingProgress;
     private static SceneTransition _instance;
-    private static bool ShouldPlayOpeningAnimation = false; // Чтобы анимация проигрывалась при открытии
+    private static bool ShouldPlayOpeningAnimation = false;
     private AsyncOperation loadingSceneOperation; 
     private Animator animator;
 
     private void Awake()
     {
+
         if (_instance != null && _instance != this)
         {
-            Destroy(gameObject); // Уничтожить дублирующий объект
+            Destroy(gameObject);
             return;
         }
-        _instance = this;
-        DontDestroyOnLoad(gameObject); // Сохраняем объект при смене сцен
-        animator = GetComponent<Animator>();
 
-        // Если анимация открытия должна проиграться
+        _instance = this;
+        DontDestroyOnLoad(transform.root.gameObject); 
+
+        animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("Не удалось найти Animator! Проверьте наличие компонента Animator.");
+        }
         if (ShouldPlayOpeningAnimation)
         {
+            Debug.Log("Проигрывание анимации открытия.");
             animator.SetTrigger("SceneOpening");
-            ShouldPlayOpeningAnimation = false; // Сбрасываем флаг
+            ShouldPlayOpeningAnimation = false;
         }
     }
-
-    // Метод для переключения сцены через подложку
+    
     public static void SwitchSceneWithLoading(int targetSceneIndex)
     {
+        Debug.Log("Попытка переключить сцену с индексом: " + targetSceneIndex);
+
         if (_instance == null)
         {
-            Debug.LogError("SceneTransition instance is missing! Make sure it's added to the starting scene.");
+            Debug.LogError("Instance SceneTransition не найден! Убедитесь, что компонент добавлен в начальную сцену.");
             return;
         }
-
-        // Запускаем анимацию закрытия сцены
-        _instance.animator.SetTrigger("SceneClosing");
-
-        // Передаем индекс целевой сцены для загрузки
+        if (_instance.animator != null)
+        {
+            Debug.Log("Запуск анимации закрытия сцены.");
+            _instance.animator.SetTrigger("SceneClosing");
+        }
         _instance.StartCoroutine(_instance.LoadSceneWithLoading(targetSceneIndex));
     }
 
     private IEnumerator LoadSceneWithLoading(int targetSceneIndex)
     {
-        // Ждем завершения анимации закрытия
+        Debug.Log("Начало загрузки сцены с индексом: " + targetSceneIndex);
         yield return new WaitForSeconds(1f);
-
-        // Загружаем сцену-подложку (экран загрузки)
+        
+        Debug.Log("Загрузка сцены подложки 'LoadingScene'.");
         SceneManager.LoadScene("LoadingScene");
 
-        // Ждем одного кадра, чтобы сцена подложки успела загрузиться
+        // Даем немного времени, чтобы сцена подложки успела отобразиться
+        yield return new WaitForSeconds(0.5f);
         yield return null;
-
-        // Начинаем асинхронную загрузку целевой сцены
+        Debug.Log("Запуск асинхронной загрузки целевой сцены.");
+        
         loadingSceneOperation = SceneManager.LoadSceneAsync(targetSceneIndex);
         loadingSceneOperation.allowSceneActivation = false;
-
-        // Обновляем прогресс на экране загрузки
         while (!loadingSceneOperation.isDone)
         {
             float progress = Mathf.Clamp01(loadingSceneOperation.progress / 0.9f);
             if (LoadingPercentage != null)
+            {
                 LoadingPercentage.text = Mathf.RoundToInt(progress * 100) + "%";
+                Debug.Log("Прогресс загрузки: " + Mathf.RoundToInt(progress * 100) + "%");
+            }
+
             if (LoadingProgress != null)
                 LoadingProgress.fillAmount = progress;
-
-          
             if (loadingSceneOperation.progress >= 0.9f)
             {
+                Debug.Log("Загрузка сцены завершена на 90%, ожидаем завершения анимации.");
+                yield return new WaitForSeconds(1f);
                 break;
             }
 
             yield return null;
         }
+        
+        Debug.Log("Загрузка целевой сцены завершена. Активируем сцену.");
+        loadingSceneOperation.allowSceneActivation = true;
     }
-
-    // Метод вызывается анимацией после завершения
     public void OnAnimationOver()
     {
-        ShouldPlayOpeningAnimation = true; // Устанавливаем анимацию открытия для следующей сцены
+        Debug.Log("Анимация завершена.");
+        ShouldPlayOpeningAnimation = true; 
         if (loadingSceneOperation != null)
         {
-            loadingSceneOperation.allowSceneActivation = true; // Активируем сцену
+            Debug.Log("Разрешаем активацию целевой сцены.");
+            loadingSceneOperation.allowSceneActivation = true; 
         }
     }
 }

@@ -252,6 +252,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3665507608588161561, guid: d38176b3fc21d6946acbe1bbbaa0a4d6, type: 3}
+      propertyPath: LoadingPercentage
+      value: 
+      objectReference: {fileID: 1280202128}
     - target: {fileID: 5436876486582134602, guid: d38176b3fc21d6946acbe1bbbaa0a4d6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -346,6 +350,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5436876486582134602, guid: d38176b3fc21d6946acbe1bbbaa0a4d6, type: 3}
   m_PrefabInstance: {fileID: 1280202126}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1280202128 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3781500368925814279, guid: d38176b3fc21d6946acbe1bbbaa0a4d6, type: 3}
+  m_PrefabInstance: {fileID: 1280202126}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1702097851
 GameObject:
   m_ObjectHideFlags: 0

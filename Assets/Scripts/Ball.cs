@@ -6,6 +6,7 @@ public class Ball : MonoBehaviour
     private InputAsset _input;
     private Rigidbody _rb;
     [SerializeField] private float moveSpeed = 5f; // Скорость движения
+    [SerializeField] private float runMultiplier = 2f; // Умножитель скорости при беге
     [SerializeField] private float gravity = -9.81f; // Сила гравитации
     [SerializeField] private float jumpForce = 5f; // Силла прыжка
     [SerializeField] private float rotationSpeed = 10f; // Скорость вращения шарика
@@ -14,7 +15,7 @@ public class Ball : MonoBehaviour
     private Vector3 _moveDirection;
     private CameraFollow _cameraFollow;
     private bool _isGrounded;
-
+    private bool _isRunning;
 
     private void Awake()
     {
@@ -39,7 +40,11 @@ public class Ball : MonoBehaviour
         _input.Gameplay.Move.canceled += OnMoveCanceled;
         _input.Gameplay.Jump.performed += JumpOnperformed;
         _input.Gameplay.Jump.canceled += JumpOnperformed;
+        _input.Gameplay.Run.performed += RunOnperformed;
+        _input.Gameplay.Run.canceled += RunOncanceled;
     }
+
+
 
     private void OnDisable()
     {
@@ -47,6 +52,8 @@ public class Ball : MonoBehaviour
         _input.Gameplay.Move.canceled -= OnMoveCanceled;
         _input.Gameplay.Jump.performed -= JumpOnperformed;
         _input.Gameplay.Jump.canceled -= JumpOnperformed;
+        _input.Gameplay.Run.performed -= RunOnperformed;
+        _input.Gameplay.Run.canceled -= RunOncanceled;
         _input.Gameplay.Disable();
     }
 
@@ -61,6 +68,16 @@ public class Ball : MonoBehaviour
         _moveDirection = Vector3.zero;
     }
 
+    private void RunOnperformed(InputAction.CallbackContext obj)
+    {
+        _isRunning = true;
+    }
+
+    private void RunOncanceled(InputAction.CallbackContext obj)
+    {
+        _isRunning = false;
+    }
+
     private void JumpOnperformed(InputAction.CallbackContext obj)
     {
         if (_isGrounded)
@@ -68,7 +85,7 @@ public class Ball : MonoBehaviour
             var jumpDirection = Vector3.up; // По умолчанию прыжок вверх
             if (_contactNormal != Vector3.zero)
             {
-                jumpDirection = _contactNormal.normalized; 
+                jumpDirection = _contactNormal.normalized;
             }
 
             _rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
@@ -78,14 +95,16 @@ public class Ball : MonoBehaviour
     private void FixedUpdate()
     {
         CheckGround();
+
         Vector3 forward = _cameraFollow.GetCameraRotation() * Vector3.forward;
         Vector3 right = _cameraFollow.GetCameraRotation() * Vector3.right;
-
         Vector3 globalMoveDirection = (forward * _moveDirection.z + right * _moveDirection.x).normalized;
 
-        // Движение
-        Vector3 force = globalMoveDirection * moveSpeed;
+        // Проверка ускорения
+        float currentSpeed = _isRunning ? moveSpeed * runMultiplier : moveSpeed;
 
+        // Движение
+        Vector3 force = globalMoveDirection * currentSpeed;
         _rb.AddForce(force, ForceMode.Acceleration);
 
         // Гравитация
@@ -120,20 +139,10 @@ public class Ball : MonoBehaviour
             _contactNormal = Vector3.zero;
         }
 
-        // Отрисовка для отладки
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, _isGrounded ? Color.green : Color.red);
         if (_isGrounded)
         {
             Debug.DrawRay(hit.point, hit.normal, Color.blue);
-        }
-    }
-    private void OnDrawGizmos()
-    {
-        if (_isGrounded && _contactNormal != Vector3.zero)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, transform.position + _contactNormal);
-            Gizmos.DrawSphere(transform.position + _contactNormal, 0.1f);
         }
     }
 }

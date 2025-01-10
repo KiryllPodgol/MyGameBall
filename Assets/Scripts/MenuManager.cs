@@ -89,7 +89,6 @@ public class MenuManager : MonoBehaviour
     {
         if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            // Используем метод для переключения через сцену-подложку
             SceneTransition.SwitchSceneWithLoading(sceneIndex);
         }
         else

@@ -15,7 +15,6 @@
                 LoadNextLevel();
             }
         }
-
         private void LoadNextLevel()
         {
             if (!string.IsNullOrEmpty(nextLevelName)) // Если указано имя сцены
