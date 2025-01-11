@@ -29,7 +29,7 @@ public class MenuManager : MonoBehaviour
     private void OnEnable()
     {
         _input.UI.Pause.performed += OnPausePressed;
-        _input.Enable();
+        _input.UI.Enable();
     }
 
     private void OnDisable()
