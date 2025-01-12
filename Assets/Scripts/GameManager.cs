@@ -8,25 +8,29 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI levelTitleText;
+    [SerializeField] private TextMeshProUGUI scoreText;
     [Header("Game Settings")]
     [SerializeField] private float timeLimit = 20f;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private CameraFollow cameraFollow;
     [Header("Portal Settings")]
-    [SerializeField] private float stopTimerDistance = 3f; // Расстояние для остановки таймера
+    [SerializeField] private float stopTimerDistance = 3f;
     [SerializeField] private Transform portalZone;
     [Header("Timer Settings")]
-    [SerializeField] private float timerStartDelay = 5f; 
+    [SerializeField] private float timerStartDelay = 5f;
+
     private float _timeRemaining;
     private bool _isGameActive;
     private bool _isTimerActive;
     private GameObject _player;
+    private int _score; 
+    private int _initialScore; 
 
     private void Start()
     {
         SetLevelTitle();
-        
+
         if (playerPrefab != null && spawnPoint != null)
         {
             _player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
@@ -36,14 +40,25 @@ public class GameManager : MonoBehaviour
                 cameraFollow.SetTarget(_player.transform);
             }
         }
-        
+
         _timeRemaining = timeLimit;
         _isGameActive = true;
         _isTimerActive = false;
+        _initialScore = _score;
+        UpdateScoreUI();
         StartCoroutine(StartTimerWithDelay());
         UpdateTimerUI();
+        Collectible.OnCollected += OnCollectibleCollected;
+    }
+    private void OnDestroy()
+    {
+        Collectible.OnCollected -= OnCollectibleCollected;
     }
 
+    private void OnCollectibleCollected()
+    {
+        AddScore(100);
+    }
 
     private void Update()
     {
@@ -56,19 +71,18 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // Проверка на близость к порталу
         if (HasPlayerNearPortal())
         {
-            ToggleTimer(false); // Останавливаем таймер, если игрок близко к порталу
+            ToggleTimer(false); 
         }
-    
-        // Проверка на падение в пропасть
         if (HasPlayerFallen())
         {
             RestartLevel();
             return;
         }
+
         if (!_isTimerActive) return;
+
         _timeRemaining -= Time.deltaTime;
         if (_timeRemaining <= 0)
         {
@@ -78,7 +92,6 @@ public class GameManager : MonoBehaviour
 
         UpdateTimerUI();
     }
-
 
     private void SetLevelTitle()
     {
@@ -113,26 +126,13 @@ public class GameManager : MonoBehaviour
 
     private void ToggleTimer(bool isActive)
     {
-        if (isActive)
-        {
-            if (!_isTimerActive)
-            {
-                _isTimerActive = true;
-            }
-        }
-        else
-        {
-            if (_isTimerActive)
-            {
-                _isTimerActive = false;
-            }
-        }
+        _isTimerActive = isActive;
     }
 
     private IEnumerator StartTimerWithDelay()
     {
-        yield return new WaitForSeconds(timerStartDelay); 
-        ToggleTimer(true); 
+        yield return new WaitForSeconds(timerStartDelay);
+        ToggleTimer(true);
     }
 
     private void EndGame(bool isWin)
@@ -142,13 +142,16 @@ public class GameManager : MonoBehaviour
 
         if (isWin)
         {
+            _score += Mathf.FloorToInt(_timeRemaining) * 10;
+            UpdateScoreUI();
+
             timerText.text = "You Win!";
             timerText.color = Color.green;
         }
         else
         {
             timerText.text = "Time's Up!";
-            RestartLevel(); 
+            RestartLevel();
         }
     }
 
@@ -158,31 +161,44 @@ public class GameManager : MonoBehaviour
 
         int minutes = Mathf.FloorToInt(_timeRemaining / 60);
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
-    
-        timerText.text = !_isTimerActive 
-            ? $"Starts in {Mathf.CeilToInt(timerStartDelay)}s" 
+
+        timerText.text = !_isTimerActive
+            ? $"Starts in {Mathf.CeilToInt(timerStartDelay)}s"
             : $"Time Left: {minutes}m {seconds}s";
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }
-    public void RestartLevel()
-    { 
-        
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+    private void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = $"Score: {_score}";
+        }
     }
 
+    public void RestartLevel()
+    {
+        _score = _initialScore; 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
     private bool HasPlayerNearPortal()
     {
         if (_player == null || portalZone == null) return false;
 
         float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
-        return distanceToPortal <= stopTimerDistance; 
+        return distanceToPortal <= stopTimerDistance;
     }
     private bool HasReachedPortal()
     {
         if (_player == null || portalZone == null) return false;
-
         float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
         return distanceToPortal <= 1f;
+    }
+
+    public void AddScore(int amount)
+    {
+        _score += amount;
+        UpdateScoreUI();
     }
 }
