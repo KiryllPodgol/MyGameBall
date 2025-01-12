@@ -1,4 +1,4 @@
-using System.Collections; 
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,13 +9,12 @@ public class SceneTransition : MonoBehaviour
     public TextMeshProUGUI LoadingPercentage;
     public Image LoadingProgress;
     private static SceneTransition _instance;
-    private static bool ShouldPlayOpeningAnimation = false;
+    [SerializeField] private bool ShouldPlayOpeningAnimation = false;
     private AsyncOperation loadingSceneOperation; 
     private Animator animator;
 
     private void Awake()
     {
-
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -28,16 +27,34 @@ public class SceneTransition : MonoBehaviour
         animator = GetComponent<Animator>();
         if (animator == null)
         {
-            Debug.LogError("Не удалось найти Animator! Проверьте наличие компонента Animator.");
+            Debug.LogError("Awake: Не удалось найти Animator! Проверьте наличие компонента Animator.");
         }
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    }
+
+    public void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
         if (ShouldPlayOpeningAnimation)
         {
-            Debug.Log("Проигрывание анимации открытия.");
+            Debug.Log("OnLevelFinishedLoading: Проигрывание анимации открытия.");
             animator.SetTrigger("SceneOpening");
             ShouldPlayOpeningAnimation = false;
         }
+        else
+        {
+            Debug.Log("OnLevelFinishedLoading did not play opening animation");
+        }
     }
-    
+
     public static void SwitchSceneWithLoading(int targetSceneIndex)
     {
         Debug.Log("Попытка переключить сцену с индексом: " + targetSceneIndex);
@@ -57,9 +74,10 @@ public class SceneTransition : MonoBehaviour
 
     private IEnumerator LoadSceneWithLoading(int targetSceneIndex)
     {
+        ShouldPlayOpeningAnimation = false;
         Debug.Log("Начало загрузки сцены с индексом: " + targetSceneIndex);
         yield return new WaitForSeconds(1f);
-        
+
         Debug.Log("Загрузка сцены подложки 'LoadingScene'.");
         SceneManager.LoadScene("LoadingScene");
 
@@ -67,7 +85,7 @@ public class SceneTransition : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         yield return null;
         Debug.Log("Запуск асинхронной загрузки целевой сцены.");
-        
+
         loadingSceneOperation = SceneManager.LoadSceneAsync(targetSceneIndex);
         loadingSceneOperation.allowSceneActivation = false;
         while (!loadingSceneOperation.isDone)
@@ -88,16 +106,18 @@ public class SceneTransition : MonoBehaviour
                 break;
             }
 
+
             yield return null;
         }
         
         Debug.Log("Загрузка целевой сцены завершена. Активируем сцену.");
+        ShouldPlayOpeningAnimation = true;
         loadingSceneOperation.allowSceneActivation = true;
     }
+
     public void OnAnimationOver()
     {
         Debug.Log("Анимация завершена.");
-        ShouldPlayOpeningAnimation = true; 
         if (loadingSceneOperation != null)
         {
             Debug.Log("Разрешаем активацию целевой сцены.");
