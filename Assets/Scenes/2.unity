@@ -199,8 +199,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2308130592566105621, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
+      propertyPath: scoreText
+      value: 
+      objectReference: {fileID: 1487271984}
+    - target: {fileID: 2308130592566105621, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: timeLimit
-      value: 1000
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 2308130592566105621, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: portalZone
@@ -263,16 +267,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7138937919834190967, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7138937919834190967, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: m_Resource
       value: 
-      objectReference: {fileID: 8300000, guid: 68141575870a5d041acbb4f1407ce52a, type: 3}
+      objectReference: {fileID: 8300000, guid: 2d55a47bd4cd1e342869e3109f4a380c, type: 3}
     - target: {fileID: 7138937919834190967, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 8300000, guid: 68141575870a5d041acbb4f1407ce52a, type: 3}
+      objectReference: {fileID: 8300000, guid: 2d55a47bd4cd1e342869e3109f4a380c, type: 3}
     - target: {fileID: 7138937919834190967, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: m_PlayOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7301216005176166123, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: m_verticalMapping
@@ -304,6 +312,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2573357489145713804, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       insertIndex: -1
       addedObject: {fileID: 403338973}
+    - targetCorrespondingSourceObject: {fileID: 2573357489145713804, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 347731820}
     - targetCorrespondingSourceObject: {fileID: 7836023680006372198, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       insertIndex: 1
       addedObject: {fileID: 1345767340}
@@ -404,12 +415,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 347731819}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 8.64, y: 53.86, z: -3.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 89140621}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &363675797
 GameObject:
@@ -1824,7 +1835,7 @@ GameObject:
   - component: {fileID: 1487271985}
   - component: {fileID: 1487271984}
   m_Layer: 5
-  m_Name: Score
+  m_Name: "\u041E\u0447\u043A\u0438"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3012,7 +3023,6 @@ SceneRoots:
   - {fileID: 1655737651}
   - {fileID: 1580926288}
   - {fileID: 1696716462}
-  - {fileID: 347731820}
   - {fileID: 89140620}
   - {fileID: 1016889659}
   - {fileID: 1290866033}
