@@ -1234,7 +1234,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 501712826}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d449d3875b78f794d898b75a7c912ff5, type: 3}
   m_Name: 
@@ -6460,7 +6460,7 @@ PrefabInstance:
       objectReference: {fileID: 319552215}
     - target: {fileID: 9212029244525838116, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
       propertyPath: timeLimit
-      value: 1000
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 9212029244525838116, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
       propertyPath: timerText

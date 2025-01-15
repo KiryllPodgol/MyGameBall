@@ -204,7 +204,7 @@ PrefabInstance:
       objectReference: {fileID: 1487271984}
     - target: {fileID: 2308130592566105621, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: timeLimit
-      value: 300
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 2308130592566105621, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: portalZone
