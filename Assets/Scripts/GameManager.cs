@@ -19,13 +19,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform portalZone;
     [Header("Timer Settings")]
     [SerializeField] private float timerStartDelay = 5f;
+    [Header("Death Settings")]
+    [SerializeField] private GameObject deadBodyPrefab; // Префаб объекта, оставляемого после смерти
+    [SerializeField] private float invulnerabilityDuration = 5f; // Время неуязвимости после смерти
 
     private float _timeRemaining;
     private bool _isGameActive;
     private bool _isTimerActive;
     private GameObject _player;
-    private int _score; 
-    private int _initialScore; 
+    private int _score;
+    private int _initialScore;
+    private bool _isInvulnerable = false; // Флаг неуязвимости
 
     private void Start()
     {
@@ -33,12 +37,7 @@ public class GameManager : MonoBehaviour
 
         if (playerPrefab != null && spawnPoint != null)
         {
-            _player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-
-            if (cameraFollow != null)
-            {
-                cameraFollow.SetTarget(_player.transform);
-            }
+            SpawnPlayer(spawnPoint.position, spawnPoint.rotation);
         }
 
         _timeRemaining = timeLimit;
@@ -50,6 +49,7 @@ public class GameManager : MonoBehaviour
         UpdateTimerUI();
         Collectible.OnCollected += OnCollectibleCollected;
     }
+
     private void OnDestroy()
     {
         Collectible.OnCollected -= OnCollectibleCollected;
@@ -64,7 +64,6 @@ public class GameManager : MonoBehaviour
     {
         if (!_isGameActive) return;
 
-        // Проверка на достижение портала
         if (HasReachedPortal())
         {
             EndGame(true);
@@ -73,7 +72,7 @@ public class GameManager : MonoBehaviour
 
         if (HasPlayerNearPortal())
         {
-            ToggleTimer(false); 
+            ToggleTimer(false);
         }
         if (HasPlayerFallen())
         {
@@ -179,9 +178,10 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        _score = _initialScore; 
+        _score = _initialScore;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
     private bool HasPlayerNearPortal()
     {
         if (_player == null || portalZone == null) return false;
@@ -189,6 +189,7 @@ public class GameManager : MonoBehaviour
         float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
         return distanceToPortal <= stopTimerDistance;
     }
+
     private bool HasReachedPortal()
     {
         if (_player == null || portalZone == null) return false;
@@ -201,4 +202,43 @@ public class GameManager : MonoBehaviour
         _score += amount;
         UpdateScoreUI();
     }
-}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_isInvulnerable) return;
+        if (collision.gameObject.TryGetComponent<Death>(out Death deathComponent))
+        {
+            Death(); 
+        }
+    }
+
+    public void Death()
+    {
+        if (_player != null)
+        {
+            Instantiate(deadBodyPrefab, _player.transform.position, _player.transform.rotation);
+            Vector3 deathPosition = _player.transform.position;
+            Destroy(_player);
+            StartCoroutine(RespawnPlayer(deathPosition));
+        }
+    }
+
+    private void SpawnPlayer(Vector3 position, Quaternion rotation)
+    {
+        _player = Instantiate(playerPrefab, position, rotation);
+
+        if (cameraFollow != null)
+        {
+            cameraFollow.SetTarget(_player.transform);
+        }
+    }
+
+    private IEnumerator RespawnPlayer(Vector3 position)
+    {
+        _isInvulnerable = true;
+        yield return new WaitForSeconds(2f); // Небольшая задержка перед созданием нового игрока
+        SpawnPlayer(position, Quaternion.identity);
+        yield return new WaitForSeconds(invulnerabilityDuration);
+        _isInvulnerable = false;
+    }
+} 
