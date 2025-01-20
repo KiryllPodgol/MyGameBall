@@ -44512,7 +44512,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1620035712}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
@@ -44618,7 +44618,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 106.13031, y: 0, z: -72.16292, w: 0}
+  m_margin: {x: 34.757202, y: 0, z: -64.9612, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -54262,7 +54262,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 308ad362cd25fe7428e65c9125c004c1, type: 3}
+  m_Texture: {fileID: 2800000, guid: 8ce771bbc1fd5ea47b6dd3598cfeda5c, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -72556,8 +72556,8 @@ Transform:
   m_GameObject: {fileID: 1942143235}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.6, y: 74.2, z: -12.5337}
-  m_LocalScale: {x: 129.5878, y: 1, z: 26.067177}
+  m_LocalPosition: {x: 6.0061, y: 74.2, z: -12.5337}
+  m_LocalScale: {x: 126.77574, y: 1, z: 26.067177}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1135491615}

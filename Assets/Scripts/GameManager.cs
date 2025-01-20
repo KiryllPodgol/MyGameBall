@@ -161,9 +161,14 @@ public class GameManager : MonoBehaviour
         int minutes = Mathf.FloorToInt(_timeRemaining / 60);
         int seconds = Mathf.FloorToInt(_timeRemaining % 60);
 
-        timerText.text = !_isTimerActive
-            ? $"Starts in {Mathf.CeilToInt(timerStartDelay)}s"
-            : $"Time Left: {minutes}m {seconds}s";
+        if (!_isTimerActive)
+        {
+            timerText.text = $"Starts in {Mathf.CeilToInt(timerStartDelay)}s";
+        }
+        else
+        {
+            timerText.text = string.Format("Time Left: {0:00}:{1:00}", minutes, seconds);
+        }
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }

@@ -3,12 +3,12 @@ using TMPro;
 
 public class ResultsUI : MonoBehaviour
 {
-    public TextMeshProUGUI[] levelTexts; // Ссылки на строки "Уровень"
-    public TextMeshProUGUI[] restartTexts; // Ссылки на строки "Рестартов"
-    public TextMeshProUGUI[] timeTexts; // Ссылки на строки "Время"
-    public TextMeshProUGUI[] deathsTexts;
-    public TextMeshProUGUI[] coinsTexts; // Ссылки на строки "Собрано монет"
-    
+    public TextMeshProUGUI[] levelTexts;
+    public TextMeshProUGUI[] restartTexts;
+    public TextMeshProUGUI[] timeTexts;
+    public TextMeshProUGUI[] deathsTexts; 
+    public TextMeshProUGUI[] coinsTexts;
+    public TextMeshProUGUI[] scoreTexts; 
 
     private void Start()
     {
@@ -22,11 +22,11 @@ public class ResultsUI : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 levelTexts[i].text = $"Уровень {i + 1}";
-                restartTexts[i].text = GameStats.Instance.restarts[i].ToString();
-                timeTexts[i].text = GameStats.Instance.levelTimes[i].ToString("F2") + " сек";
-                coinsTexts[i].text = GameStats.Instance.coinsCollected[i].ToString();
-                deathsTexts[i].text = GameStats.Instance.deaths[i].ToString();
-                
+                restartTexts[i].text = $"Рестартов: {GameStats.Instance.restarts[i]}";
+                timeTexts[i].text = $"Время: {GameStats.Instance.levelTimes[i]:F2} сек";
+                coinsTexts[i].text = $"Монет: {GameStats.Instance.coinsCollected[i]}";
+                deathsTexts[i].text = $"Смертей: {GameStats.Instance.deaths[i]}";
+                scoreTexts[i].text = $"Очки: {GameStats.Instance.levelScores[i]}";
             }
         }
     }
