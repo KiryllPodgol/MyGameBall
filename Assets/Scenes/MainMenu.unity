@@ -7306,6 +7306,10 @@ MonoBehaviour:
   - {fileID: 1878905187}
   - {fileID: 920844888}
   - {fileID: 1301803778}
+  scoreTexts:
+  - {fileID: 1240416944}
+  - {fileID: 1987227126}
+  - {fileID: 415733251}
 --- !u!4 &1814804606
 Transform:
   m_ObjectHideFlags: 0
@@ -8002,6 +8006,7 @@ MonoBehaviour:
   restarts: 
   coinsCollected: 
   levelTimes: []
+  levelScores: 
 --- !u!4 &1940815968
 Transform:
   m_ObjectHideFlags: 0
