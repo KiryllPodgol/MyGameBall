@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraFollow : MonoBehaviour
 {
@@ -16,8 +17,23 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+       
+        UpdateCursorState();
+    }
+    private void UpdateCursorState()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (currentSceneIndex == 5)
+        {
+            Cursor.lockState = CursorLockMode.None; // Разблокировать курсор
+            Cursor.visible = true; // Сделать курсор видимым
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked; // Заблокировать курсор
+            Cursor.visible = false; // Скрыть курсор
+        }
     }
     private void FixedUpdate()
     {
