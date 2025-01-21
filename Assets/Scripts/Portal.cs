@@ -3,10 +3,26 @@ using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour
 {
+    private int _coins;
     [SerializeField] private string nextLevelName;
     [SerializeField] private int nextLevelIndex = -1;
 
     private bool isActivated = false;
+
+    private void Start()
+    {
+        Collectible.OnCollected += AddCoin;
+    }
+
+    private void AddCoin()
+    {
+        _coins++;
+    }
+
+    private void OnDestroy()
+    {
+        Collectible.OnCollected -= AddCoin;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -23,7 +39,8 @@ public class Portal : MonoBehaviour
         if (GameStats.Instance != null)
         {
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-            GameStats.Instance.EndLevel(currentLevelIndex); // Завершаем текущий уровень
+            GameStats.Instance.EndLevel(currentLevelIndex);
+            GameStats.Instance.AddCoins(currentLevelIndex, _coins);
         }
 
         if (!string.IsNullOrEmpty(nextLevelName))
@@ -50,3 +67,4 @@ public class Portal : MonoBehaviour
         }
     }
 }
+    

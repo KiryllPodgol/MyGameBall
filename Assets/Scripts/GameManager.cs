@@ -213,7 +213,6 @@ public class GameManager : MonoBehaviour
         float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
         return distanceToPortal <= 1f;
     }
-
     public void AddScore(int amount)
     {
         _score += amount;
