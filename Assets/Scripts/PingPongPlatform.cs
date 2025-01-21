@@ -35,7 +35,8 @@ public class MovingPlatform : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        // Убираем родителя при выходе
+        
         collision.transform.parent = null;
+        transform.parent = null;
     }
 }
