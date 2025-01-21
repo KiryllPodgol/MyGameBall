@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,10 +13,13 @@ public class Ball : MonoBehaviour
     [SerializeField] private float rotationSpeed = 10f; 
     [SerializeField] private LayerMask groundLayer; 
     [SerializeField] private float groundCheckDistance = 1f;
+    [SerializeField] private float decelerationRate = 2f; // Скорость замедления
+
     private Vector3 _moveDirection;
     private CameraFollow _cameraFollow;
     private bool _isGrounded;
     private bool _isRunning;
+    private Coroutine _decelerationCoroutine;
 
     private void Awake()
     {
@@ -30,7 +34,6 @@ public class Ball : MonoBehaviour
             Debug.LogError("Main Camera not found! Please assign a camera with the CameraFollow script.");
             enabled = false;
         }
-
     }
 
     private void OnEnable()
@@ -38,22 +41,18 @@ public class Ball : MonoBehaviour
         _input.Gameplay.Enable();
         _input.Gameplay.Move.performed += OnMovePerformed;
         _input.Gameplay.Move.canceled += OnMoveCanceled;
-        _input.Gameplay.Jump.performed += JumpOnperformed;
-        _input.Gameplay.Jump.canceled += JumpOnperformed;
-        _input.Gameplay.Run.performed += RunOnperformed;
-        _input.Gameplay.Run.canceled += RunOncanceled;
+        _input.Gameplay.Jump.performed += JumpOnPerformed;
+        _input.Gameplay.Run.performed += RunOnPerformed;
+        _input.Gameplay.Run.canceled += RunOnCanceled;
     }
-
-
 
     private void OnDisable()
     {
         _input.Gameplay.Move.performed -= OnMovePerformed;
         _input.Gameplay.Move.canceled -= OnMoveCanceled;
-        _input.Gameplay.Jump.performed -= JumpOnperformed;
-        _input.Gameplay.Jump.canceled -= JumpOnperformed;
-        _input.Gameplay.Run.performed -= RunOnperformed;
-        _input.Gameplay.Run.canceled -= RunOncanceled;
+        _input.Gameplay.Jump.performed -= JumpOnPerformed;
+        _input.Gameplay.Run.performed -= RunOnPerformed;
+        _input.Gameplay.Run.canceled -= RunOnCanceled;
         _input.Gameplay.Disable();
     }
 
@@ -61,34 +60,41 @@ public class Ball : MonoBehaviour
     {
         Vector2 inputVector = context.ReadValue<Vector2>();
         _moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
+
+        // Остановка корутины замедления, если игрок снова двигается
+        if (_decelerationCoroutine != null)
+        {
+            StopCoroutine(_decelerationCoroutine);
+            _decelerationCoroutine = null;
+        }
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
         _moveDirection = Vector3.zero;
+
+        // Запуск корутины замедления, если игрок отпустил управление
+        if (_decelerationCoroutine == null)
+        {
+            _decelerationCoroutine = StartCoroutine(Decelerate());
+        }
     }
 
-    private void RunOnperformed(InputAction.CallbackContext obj)
+    private void RunOnPerformed(InputAction.CallbackContext obj)
     {
         _isRunning = true;
     }
 
-    private void RunOncanceled(InputAction.CallbackContext obj)
+    private void RunOnCanceled(InputAction.CallbackContext obj)
     {
         _isRunning = false;
     }
 
-    private void JumpOnperformed(InputAction.CallbackContext obj)
+    private void JumpOnPerformed(InputAction.CallbackContext obj)
     {
         if (_isGrounded)
         {
-            var jumpDirection = Vector3.up; // По умолчанию прыжок вверх
-            if (_contactNormal != Vector3.zero)
-            {
-                jumpDirection = _contactNormal.normalized;
-            }
-
-            _rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
+            _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
@@ -100,29 +106,33 @@ public class Ball : MonoBehaviour
         Vector3 right = _cameraFollow.GetCameraRotation() * Vector3.right;
         Vector3 globalMoveDirection = (forward * _moveDirection.z + right * _moveDirection.x).normalized;
 
-        // Проверка ускорения
         float currentSpeed = _isRunning ? moveSpeed * runMultiplier : moveSpeed;
 
-        // Движение
-        Vector3 force = globalMoveDirection * currentSpeed;
-        _rb.AddForce(force, ForceMode.Acceleration);
-
-        // Гравитация
-        _rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
-
-        // Вращение
         if (_moveDirection.magnitude > 0.1f)
         {
+            // Движение
+            Vector3 force = globalMoveDirection * currentSpeed;
+            _rb.AddForce(force, ForceMode.Acceleration);
+
+            // Вращение
             Vector3 torque = new Vector3(globalMoveDirection.z, 0, -globalMoveDirection.x) * rotationSpeed;
             _rb.AddTorque(torque, ForceMode.Acceleration);
         }
+
+        // Гравитация
+        _rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
     }
 
-    private Vector3 _contactNormal;
-
-    private void OnCollisionEnter(Collision other)
+    private IEnumerator Decelerate()
     {
-        _contactNormal = other.contacts[0].normal;
+        while (_rb.linearVelocity.magnitude > 0.1f)
+        {
+            _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero, Time.fixedDeltaTime * decelerationRate);
+            yield return new WaitForFixedUpdate();
+        }
+
+        _rb.linearVelocity = Vector3.zero; // Полная остановка
+        _decelerationCoroutine = null;
     }
 
     private void CheckGround()
@@ -130,19 +140,6 @@ public class Ball : MonoBehaviour
         RaycastHit hit;
         _isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance, groundLayer);
 
-        if (_isGrounded)
-        {
-            _contactNormal = hit.normal;
-        }
-        else
-        {
-            _contactNormal = Vector3.zero;
-        }
-
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, _isGrounded ? Color.green : Color.red);
-        if (_isGrounded)
-        {
-            Debug.DrawRay(hit.point, hit.normal, Color.blue);
-        }
     }
 }

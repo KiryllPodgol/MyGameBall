@@ -1545,9 +1545,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e89db3bda6c834419d8813f8293a664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartMovingTime: 0
-  MovingSpeed: 0
-  moveDirection: {x: 0, y: 0, z: 0}
+  StartMovingTime: 3
+  MovingSpeed: 5
+  moveDirection: {x: 0, y: 0, z: 1}
 --- !u!65 &200040108
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -41691,9 +41691,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e89db3bda6c834419d8813f8293a664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartMovingTime: 0
-  MovingSpeed: 0
-  moveDirection: {x: 0, y: 0, z: 0}
+  StartMovingTime: 3
+  MovingSpeed: 3
+  moveDirection: {x: 0, y: 0, z: -1}
 --- !u!65 &1135400223
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -42375,9 +42375,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e89db3bda6c834419d8813f8293a664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartMovingTime: 0
-  MovingSpeed: 0
-  moveDirection: {x: 0, y: 0, z: 0}
+  StartMovingTime: 3
+  MovingSpeed: 2
+  moveDirection: {x: 0, y: 0, z: 1}
 --- !u!65 &1343918780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72469,7 +72469,7 @@ Transform:
   m_GameObject: {fileID: 1876093097}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.2, y: 0, z: 0}
   m_LocalScale: {x: 30, y: 1, z: 25.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
