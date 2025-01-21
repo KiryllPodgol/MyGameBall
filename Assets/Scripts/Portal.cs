@@ -6,11 +6,11 @@ public class Portal : MonoBehaviour
     [SerializeField] private string nextLevelName;
     [SerializeField] private int nextLevelIndex = -1;
 
-    private bool isActivated = false; 
+    private bool isActivated = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        
+
         if (!isActivated && other.GetComponent<Ball>() != null)
         {
             isActivated = true;
@@ -20,6 +20,12 @@ public class Portal : MonoBehaviour
 
     private void LoadNextLevel()
     {
+        if (GameStats.Instance != null)
+        {
+            int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+            GameStats.Instance.EndLevel(currentLevelIndex); // Завершаем текущий уровень
+        }
+
         if (!string.IsNullOrEmpty(nextLevelName))
         {
             Debug.Log($"Переход на уровень: {nextLevelName}");

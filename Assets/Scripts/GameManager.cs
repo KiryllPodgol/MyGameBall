@@ -33,6 +33,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (GameStats.Instance != null)
+        {
+            GameStats.Instance.StartLevel(currentLevelIndex); // Начинаем отслеживание времени уровня
+        }
+
         SetLevelTitle();
 
         if (playerPrefab != null && spawnPoint != null)
@@ -49,7 +56,6 @@ public class GameManager : MonoBehaviour
         UpdateTimerUI();
         Collectible.OnCollected += OnCollectibleCollected;
     }
-
     private void OnDestroy()
     {
         Collectible.OnCollected -= OnCollectibleCollected;
@@ -183,6 +189,12 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        if (GameStats.Instance != null)
+        {
+            int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+            GameStats.Instance.AddRestart(currentLevelIndex); // Увеличиваем счетчик рестартов
+        }
+
         _score = _initialScore;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -208,7 +220,7 @@ public class GameManager : MonoBehaviour
         UpdateScoreUI();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void OnCollisionEnter(Collision collision)
     {
         if (_isInvulnerable) return;
         if (collision.gameObject.TryGetComponent<Death>(out Death deathComponent))
@@ -219,13 +231,18 @@ public class GameManager : MonoBehaviour
 
     public void Death()
     {
-        if (_player != null)
+        if (GameStats.Instance != null)
         {
-            Instantiate(deadBodyPrefab, _player.transform.position, _player.transform.rotation);
-            Vector3 deathPosition = _player.transform.position;
-            Destroy(_player);
-            StartCoroutine(RespawnPlayer(deathPosition));
+            int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+            GameStats.Instance.AddDeath(currentLevelIndex); // Увеличиваем счетчик смертей
         }
+
+        if (deadBodyPrefab != null)
+        {
+            Instantiate(deadBodyPrefab, _player.transform.position, Quaternion.identity);
+        }
+
+        RestartLevel();
     }
 
     private void SpawnPlayer(Vector3 position, Quaternion rotation)
