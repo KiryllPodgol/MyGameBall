@@ -177,7 +177,7 @@ public class GameManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = $"Score: {_score}";
+            scoreText.text = $"Очков: {_score}";
         }
     }
 
