@@ -241,7 +241,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator RespawnPlayer(Vector3 position)
     {
         _isInvulnerable = true;
-        yield return new WaitForSeconds(2f); // Небольшая задержка перед созданием нового игрока
+        yield return new WaitForSeconds(2f); 
         SpawnPlayer(position, Quaternion.identity);
         yield return new WaitForSeconds(invulnerabilityDuration);
         _isInvulnerable = false;

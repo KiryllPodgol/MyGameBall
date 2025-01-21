@@ -76,13 +76,13 @@ public class SceneTransition : MonoBehaviour
     {
         ShouldPlayOpeningAnimation = false;
         Debug.Log("Начало загрузки сцены с индексом: " + targetSceneIndex);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
 
         Debug.Log("Загрузка сцены подложки 'LoadingScene'.");
         SceneManager.LoadScene("LoadingScene");
 
         // Даем немного времени, чтобы сцена подложки успела отобразиться
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
         yield return null;
         Debug.Log("Запуск асинхронной загрузки целевой сцены.");
 
@@ -102,7 +102,7 @@ public class SceneTransition : MonoBehaviour
             if (loadingSceneOperation.progress >= 0.9f)
             {
                 Debug.Log("Загрузка сцены завершена на 90%, ожидаем завершения анимации.");
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSecondsRealtime(1f);
                 break;
             }
 

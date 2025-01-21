@@ -436,7 +436,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: f18efd7b9f2efd54ea36a8207e4b0915, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -460,6 +460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoadingPercentage: {fileID: 3781500368925814279}
   LoadingProgress: {fileID: 3375071232456901687}
+  ShouldPlayOpeningAnimation: 0
 --- !u!1 &6676917664468547475
 GameObject:
   m_ObjectHideFlags: 0

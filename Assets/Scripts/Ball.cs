@@ -121,19 +121,17 @@ public class Ball : MonoBehaviour
         // Гравитация
         _rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
     }
-
     private IEnumerator Decelerate()
     {
         while (_rb.linearVelocity.magnitude > 0.1f)
         {
-            _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero, Time.fixedDeltaTime * decelerationRate);
+            Vector3 newVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero, Time.fixedDeltaTime * decelerationRate);
+            _rb.linearVelocity = new Vector3(newVelocity.x, _rb.linearVelocity.y, newVelocity.z);
             yield return new WaitForFixedUpdate();
         }
-
-        _rb.linearVelocity = Vector3.zero; // Полная остановка
+        _rb.linearVelocity = Vector3.zero;
         _decelerationCoroutine = null;
     }
-
     private void CheckGround()
     {
         RaycastHit hit;
