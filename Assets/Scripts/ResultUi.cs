@@ -22,11 +22,11 @@ public class ResultsUI : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 levelTexts[i].text = $"Уровень {i + 1}";
-                restartTexts[i].text = $"Рестартов: {GameStats.Instance.restarts[i]}";
-                timeTexts[i].text = $"Время: {GameStats.Instance.levelTimes[i]:F2} сек";
-                coinsTexts[i].text = $"Монет: {GameStats.Instance.coinsCollected[i]}";
-                deathsTexts[i].text = $"Смертей: {GameStats.Instance.deaths[i]}";
-                scoreTexts[i].text = $"Очки: {GameStats.Instance.levelScores[i]}";
+                restartTexts[i].text = $" {GameStats.Instance.restarts[i]}";
+                timeTexts[i].text = $" {GameStats.Instance.levelTimes[i]:F2} сек";
+                coinsTexts[i].text = $" {GameStats.Instance.coinsCollected[i]}";
+                deathsTexts[i].text = $"{GameStats.Instance.deaths[i]}";
+                scoreTexts[i].text = $" {GameStats.Instance.levelScores[i]}";
             }
         }
     }
