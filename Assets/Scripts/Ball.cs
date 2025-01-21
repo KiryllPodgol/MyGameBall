@@ -14,7 +14,6 @@ public class Ball : MonoBehaviour
     [SerializeField] private LayerMask groundLayer; 
     [SerializeField] private float groundCheckDistance = 1f;
     [SerializeField] private float decelerationRate = 2f; // Скорость замедления
-
     private Vector3 _moveDirection;
     private CameraFollow _cameraFollow;
     private bool _isGrounded;
