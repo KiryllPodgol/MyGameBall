@@ -34,31 +34,40 @@ public class GameStats : MonoBehaviour
         levelScores = new int[3];
     }
 
-    public void StartLevel(int levelIndex)
+    public void StartLevel(int sceneIndex)
     {
-        levelStartTime = Time.time; 
+        int levelIndex = ConvertIndex(sceneIndex);
+        levelStartTime = Time.time;
     }
 
-    public void EndLevel(int levelIndex)
+    public void EndLevel(int sceneIndex)
     {
+        int levelIndex = ConvertIndex(sceneIndex);
         levelTimes[levelIndex] = Time.time - levelStartTime;
         levelScores[levelIndex] = CalculateLevelScore(levelIndex);
     }
 
-    public void AddDeath(int levelIndex)
+    public void AddDeath(int sceneIndex)
     {
+        int levelIndex = ConvertIndex(sceneIndex);
         deaths[levelIndex]++;
     }
 
-    public void AddRestart(int levelIndex)
+    public void AddRestart(int sceneIndex)
     {
+        int levelIndex = ConvertIndex(sceneIndex);
         restarts[levelIndex]++;
+    }
+    private int ConvertIndex(int sceneIndex)
+    {
+        return sceneIndex - 1;
     }
 
     public void AddCoins(int levelIndex, int coins)
     {
-        coinsCollected[levelIndex] += coins;
+        coinsCollected[ConvertIndex(levelIndex)] += coins;
     }
+
 
     private int CalculateLevelScore(int levelIndex)
     {
