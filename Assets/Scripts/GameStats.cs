@@ -4,6 +4,7 @@ public class GameStats : MonoBehaviour
 {
     public static GameStats Instance;
 
+    public int numberOfLevels = 3; 
     public int[] deaths; 
     public int[] restarts; 
     public int[] coinsCollected;
@@ -27,11 +28,11 @@ public class GameStats : MonoBehaviour
 
     private void InitializeStats()
     {
-        deaths = new int[3];
-        restarts = new int[3];
-        coinsCollected = new int[3];
-        levelTimes = new float[3];
-        levelScores = new int[3];
+        deaths = new int[numberOfLevels];
+        restarts = new int[numberOfLevels];
+        coinsCollected = new int[numberOfLevels];
+        levelTimes = new float[numberOfLevels];
+        levelScores = new int[numberOfLevels];
     }
 
     public void StartLevel(int sceneIndex)
@@ -52,12 +53,12 @@ public class GameStats : MonoBehaviour
         int levelIndex = ConvertIndex(sceneIndex);
         deaths[levelIndex]++;
     }
-
     public void AddRestart(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
         restarts[levelIndex]++;
     }
+
     private int ConvertIndex(int sceneIndex)
     {
         return sceneIndex - 1;
@@ -67,7 +68,6 @@ public class GameStats : MonoBehaviour
     {
         coinsCollected[ConvertIndex(levelIndex)] += coins;
     }
-
 
     private int CalculateLevelScore(int levelIndex)
     {
@@ -90,18 +90,17 @@ public class GameStats : MonoBehaviour
         int penalty = (restartsCount * K_restarts) + (deathsCount * K_deaths);
         penalty = Mathf.Min(penalty, maxPenalty);
 
-      
-        int score = baseScore + 
-                    (coins * K_coins) + 
-                    (int)(remainingTime * K_time) - 
+        int score = baseScore +
+                    (coins * K_coins) +
+                    (int)(remainingTime * K_time) -
                     penalty;
 
         // Добавление бонуса за уровень без смертей и рестартов
         if (restartsCount == 0 && deathsCount == 0)
         {
-            score += bonuses[levelIndex];
+            score += bonuses[Mathf.Min(levelIndex, bonuses.Length - 1)];
         }
 
-        return score > 0 ? score : 0;
+        return Mathf.Max(score, 0);
     }
 }
