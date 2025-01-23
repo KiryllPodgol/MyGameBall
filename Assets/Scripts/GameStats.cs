@@ -5,12 +5,8 @@ public class GameStats : MonoBehaviour
     public static GameStats Instance;
 
     public int numberOfLevels = 3; 
-    public int[] deaths; 
-    public int[] restarts; 
-    public int[] coinsCollected;
-    public float[] levelTimes; 
+    public LevelStats[] levels; 
     private float levelStartTime;
-    public int[] levelScores; 
 
     private void Awake()
     {
@@ -28,11 +24,11 @@ public class GameStats : MonoBehaviour
 
     private void InitializeStats()
     {
-        deaths = new int[numberOfLevels];
-        restarts = new int[numberOfLevels];
-        coinsCollected = new int[numberOfLevels];
-        levelTimes = new float[numberOfLevels];
-        levelScores = new int[numberOfLevels];
+        levels = new LevelStats[numberOfLevels];
+        for (int i = 0; i < numberOfLevels; i++)
+        {
+            levels[i] = new LevelStats();
+        }
     }
 
     public void StartLevel(int sceneIndex)
@@ -44,19 +40,20 @@ public class GameStats : MonoBehaviour
     public void EndLevel(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
-        levelTimes[levelIndex] = Time.time - levelStartTime;
-        levelScores[levelIndex] = CalculateLevelScore(levelIndex);
+        levels[levelIndex].levelTime = Time.time - levelStartTime;
+        levels[levelIndex].score = CalculateLevelScore(levelIndex);
     }
 
     public void AddDeath(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
-        deaths[levelIndex]++;
+        levels[levelIndex].deaths++;
     }
+
     public void AddRestart(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
-        restarts[levelIndex]++;
+        levels[levelIndex].restarts++;
     }
 
     private int ConvertIndex(int sceneIndex)
@@ -66,37 +63,36 @@ public class GameStats : MonoBehaviour
 
     public void AddCoins(int levelIndex, int coins)
     {
-        coinsCollected[ConvertIndex(levelIndex)] += coins;
+        levels[ConvertIndex(levelIndex)].coinsCollected += coins;
     }
 
     private int CalculateLevelScore(int levelIndex)
     {
         // Константы
-        int baseScore = 100;        // Базовые очки за уровень
-        int K_coins = 10;           // Множитель для монет
-        int K_time = 2;             // Множитель для оставшегося времени
-        int K_restarts = 50;        // Штраф за рестарты
-        int K_deaths = 100;         // Штраф за смерти
-        int maxPenalty = 300;       // Максимальный штраф
-        int[] bonuses = { 100, 200, 300 }; // Фиксированные бонусы
+        int baseScore = 100;        
+        int K_coins = 10;           
+        int K_time = 2;             
+        int K_restarts = 50;        
+        int K_deaths = 100;         
+        int maxPenalty = 300;       
+        int[] bonuses = { 100, 200, 300 }; 
 
         // Данные уровня
-        int coins = coinsCollected[levelIndex];
-        float remainingTime = Mathf.Max(0, 120f - levelTimes[levelIndex]);
-        int restartsCount = restarts[levelIndex];
-        int deathsCount = deaths[levelIndex];
-
+        var stats = levels[levelIndex];
+        
+        float remainingTime = Mathf.Max(0, 120f - stats.levelTime);
+        
         // Расчёт штрафов (с ограничением)
-        int penalty = (restartsCount * K_restarts) + (deathsCount * K_deaths);
+        int penalty = (stats.restarts * K_restarts) + (stats.deaths * K_deaths);
         penalty = Mathf.Min(penalty, maxPenalty);
 
         int score = baseScore +
-                    (coins * K_coins) +
+                    (stats.coinsCollected * K_coins) +
                     (int)(remainingTime * K_time) -
                     penalty;
 
         // Добавление бонуса за уровень без смертей и рестартов
-        if (restartsCount == 0 && deathsCount == 0)
+        if (stats.restarts == 0 && stats.deaths == 0)
         {
             score += bonuses[Mathf.Min(levelIndex, bonuses.Length - 1)];
         }
