@@ -1,4 +1,4 @@
-using UnityEngine; 
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,6 +8,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private bool Pausable = true;
+
     private InputAsset _input;
     private bool isPaused = false;
 
@@ -15,6 +17,7 @@ public class MenuManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         _input = new InputAsset();
+
         if (musicSource != null && volumeSlider != null)
         {
             volumeSlider.value = musicSource.volume;
@@ -45,7 +48,14 @@ public class MenuManager : MonoBehaviour
 
     private void OnPausePressed(InputAction.CallbackContext context)
     {
-        TogglePause();
+        if (Pausable)
+        {
+            TogglePause();
+        }
+        else
+        {
+            Debug.Log("Pause is disabled for this scene.");
+        }
     }
 
     public void MusicVolume(float volume)
