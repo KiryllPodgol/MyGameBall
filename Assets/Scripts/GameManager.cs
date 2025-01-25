@@ -192,7 +192,7 @@ public class GameManager : MonoBehaviour
         if (GameStats.Instance != null)
         {
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-            GameStats.Instance.AddRestart(currentLevelIndex); // Увеличиваем счетчик рестартов
+            GameStats.Instance.AddRestart(currentLevelIndex);
         }
 
         _score = _initialScore;

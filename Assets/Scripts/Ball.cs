@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,7 +9,6 @@ public class Ball : MonoBehaviour
     [SerializeField] private float runMultiplier = 2f;
     [SerializeField] private float gravity = -9.81f; // Сила гравитации
     [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float rotationSpeed = 10f; 
     [SerializeField] private LayerMask groundLayer; 
     [SerializeField] private float groundCheckDistance = 1f;
     [SerializeField] private float decelerationRate = 2f; // Скорость замедления
@@ -18,7 +16,6 @@ public class Ball : MonoBehaviour
     private CameraFollow _cameraFollow;
     private bool _isGrounded;
     private bool _isRunning;
-    private Coroutine _decelerationCoroutine;
 
     private void Awake()
     {
@@ -59,24 +56,10 @@ public class Ball : MonoBehaviour
     {
         Vector2 inputVector = context.ReadValue<Vector2>();
         _moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
-
-        // Остановка корутины замедления, если игрок снова двигается
-        if (_decelerationCoroutine != null)
-        {
-            StopCoroutine(_decelerationCoroutine);
-            _decelerationCoroutine = null;
-        }
     }
-
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
         _moveDirection = Vector3.zero;
-
-        // Запуск корутины замедления, если игрок отпустил управление
-        if (_decelerationCoroutine == null)
-        {
-            _decelerationCoroutine = StartCoroutine(Decelerate());
-        }
     }
 
     private void RunOnPerformed(InputAction.CallbackContext obj)
@@ -107,30 +90,24 @@ public class Ball : MonoBehaviour
 
         float currentSpeed = _isRunning ? moveSpeed * runMultiplier : moveSpeed;
 
-        if (_moveDirection.magnitude > 0.1f)
+        if (_moveDirection.sqrMagnitude > 0.1f)
         {
-            // Движение
+            // Движение и Вращение
             Vector3 force = globalMoveDirection * currentSpeed;
-            _rb.AddForce(force, ForceMode.Acceleration);
-
-            // Вращение
-            Vector3 torque = new Vector3(globalMoveDirection.z, 0, -globalMoveDirection.x) * rotationSpeed;
-            _rb.AddTorque(torque, ForceMode.Acceleration);
+            _rb.AddForceAtPosition(force, _rb.transform.position + Vector3.up * 1.75f, ForceMode.Acceleration);
         }
-
+        else if (_rb.linearVelocity.sqrMagnitude > 0.1f)
+        {
+            Vector3 newVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero,
+                Time.fixedDeltaTime * decelerationRate);
+            _rb.linearVelocity = new Vector3(newVelocity.x, _rb.linearVelocity.y, newVelocity.z);
+        }
+        else
+        { 
+            _rb.linearVelocity = Vector3.zero;
+        }
         // Гравитация
         _rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
-    }
-    private IEnumerator Decelerate()
-    {
-        while (_rb.linearVelocity.magnitude > 0.1f)
-        {
-            Vector3 newVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero, Time.fixedDeltaTime * decelerationRate);
-            _rb.linearVelocity = new Vector3(newVelocity.x, _rb.linearVelocity.y, newVelocity.z);
-            yield return new WaitForFixedUpdate();
-        }
-        _rb.linearVelocity = Vector3.zero;
-        _decelerationCoroutine = null;
     }
     private void CheckGround()
     {

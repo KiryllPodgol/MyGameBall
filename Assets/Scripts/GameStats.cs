@@ -22,12 +22,13 @@ public class GameStats : MonoBehaviour
         }
     }
 
-    private void InitializeStats()
+    public void InitializeStats()
     {
         levels = new LevelStats[numberOfLevels];
         for (int i = 0; i < numberOfLevels; i++)
         {
             levels[i] = new LevelStats();
+            LoadLevelStats(i); // Загружаем данные из PlayerPrefs
         }
     }
 
@@ -35,6 +36,10 @@ public class GameStats : MonoBehaviour
     {
         int levelIndex = ConvertIndex(sceneIndex);
         levelStartTime = Time.time;
+
+        // Сбрасываем данные, которые относятся к текущей попытке
+        levels[levelIndex].coinsCollected = 0;
+        levels[levelIndex].levelTime = 0;
     }
 
     public void EndLevel(int sceneIndex)
@@ -42,61 +47,92 @@ public class GameStats : MonoBehaviour
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].levelTime = Time.time - levelStartTime;
         levels[levelIndex].score = CalculateLevelScore(levelIndex);
+        SaveLevelStats(levelIndex); // Сохраняем данные после завершения уровня
     }
 
     public void AddDeath(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].deaths++;
+        SaveLevelStats(levelIndex); // Сохраняем обновленные данные
     }
 
     public void AddRestart(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
+
+        // Увеличиваем количество рестартов
         levels[levelIndex].restarts++;
+
+        // Сохраняем обновленные данные
+        SaveLevelStats(levelIndex);
+    }
+
+    public void AddCoins(int sceneIndex, int coins)
+    {
+        int levelIndex = ConvertIndex(sceneIndex);
+
+        // Добавляем монеты к текущему значению
+        levels[levelIndex].coinsCollected += coins;
+
+        // Сохраняем обновленные данные
+        SaveLevelStats(levelIndex);
     }
 
     private int ConvertIndex(int sceneIndex)
     {
-        return sceneIndex - 1;
-    }
-
-    public void AddCoins(int levelIndex, int coins)
-    {
-        levels[ConvertIndex(levelIndex)].coinsCollected += coins;
+        return sceneIndex - 1; // Предполагается, что индексы сцен начинаются с 1
     }
 
     private int CalculateLevelScore(int levelIndex)
     {
         // Константы
-        int baseScore = 100;        
-        int K_coins = 10;           
-        int K_time = 2;             
-        int K_restarts = 50;        
-        int K_deaths = 100;         
-        int maxPenalty = 300;       
-        int[] bonuses = { 100, 200, 300 }; 
+        int baseScore = 100;
+        int K_coins = 10;
+        int K_time = 2;
+        int K_restarts = 50;
+        int K_deaths = 100;
+        int maxPenalty = 300;
+        int[] bonuses = { 100, 200, 300 };
 
-        // Данные уровня
         var stats = levels[levelIndex];
-        
         float remainingTime = Mathf.Max(0, 120f - stats.levelTime);
-        
-        // Расчёт штрафов (с ограничением)
-        int penalty = (stats.restarts * K_restarts) + (stats.deaths * K_deaths);
-        penalty = Mathf.Min(penalty, maxPenalty);
+
+        int penalty = Mathf.Min(
+            (stats.restarts * K_restarts) + (stats.deaths * K_deaths),
+            maxPenalty
+        );
 
         int score = baseScore +
                     (stats.coinsCollected * K_coins) +
                     (int)(remainingTime * K_time) -
                     penalty;
 
-        // Добавление бонуса за уровень без смертей и рестартов
         if (stats.restarts == 0 && stats.deaths == 0)
         {
             score += bonuses[Mathf.Min(levelIndex, bonuses.Length - 1)];
         }
 
         return Mathf.Max(score, 0);
+    }
+
+    private void SaveLevelStats(int levelIndex)
+    {
+        PlayerPrefs.SetInt($"Level_{levelIndex}_Deaths", levels[levelIndex].deaths);
+        PlayerPrefs.SetInt($"Level_{levelIndex}_Restarts", levels[levelIndex].restarts);
+        PlayerPrefs.SetInt($"Level_{levelIndex}_Coins", levels[levelIndex].coinsCollected);
+        PlayerPrefs.SetFloat($"Level_{levelIndex}_Time", levels[levelIndex].levelTime);
+        PlayerPrefs.SetInt($"Level_{levelIndex}_Score", levels[levelIndex].score);
+
+        PlayerPrefs.Save(); // Сохраняем изменения в PlayerPrefs
+    }
+
+    private void LoadLevelStats(int levelIndex)
+    {
+        levels[levelIndex].deaths = PlayerPrefs.GetInt($"Level_{levelIndex}_Deaths", 0);
+        levels[levelIndex].restarts = PlayerPrefs.GetInt($"Level_{levelIndex}_Restarts", 0);
+        levels[levelIndex].coinsCollected = PlayerPrefs.GetInt($"Level_{levelIndex}_Coins", 0);
+        levels[levelIndex].levelTime = PlayerPrefs.GetFloat($"Level_{levelIndex}_Time", 0f);
+        levels[levelIndex].score = PlayerPrefs.GetInt($"Level_{levelIndex}_Score", 0);
     }
 }
