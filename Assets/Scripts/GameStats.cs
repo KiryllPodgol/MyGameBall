@@ -7,8 +7,6 @@ public class GameStats : MonoBehaviour
     public int numberOfLevels = 3; 
     public LevelStats[] levels; 
     private float levelStartTime;
-
-    // Флаги для отслеживания первого входа на уровень
     private bool[] firstEntry;
 
     private void Awake()
@@ -17,7 +15,7 @@ public class GameStats : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InitializeStats();
+            ResetStats();
         }
         else
         {
@@ -25,18 +23,28 @@ public class GameStats : MonoBehaviour
         }
     }
 
-    private void InitializeStats()
+    public void ResetStats()
     {
         levels = new LevelStats[numberOfLevels];
         firstEntry = new bool[numberOfLevels]; // Инициализация массива флагов
 
         for (int i = 0; i < numberOfLevels; i++)
         {
-            levels[i] = new LevelStats();
-            LoadLevelStats(i); // Загружаем данные из PlayerPrefs
+            levels[i] = new LevelStats(); // Обнуляем показатели уровня
             firstEntry[i] = true; // Устанавливаем флаг первого входа в true
         }
     }
+
+    public void LoadStats()
+    {
+        levels = new LevelStats[numberOfLevels];
+        for (int i = 0; i < numberOfLevels; i++)
+        {
+            levels[i] = new LevelStats();
+            LoadLevelStats(i); // Загружаем данные из PlayerPrefs
+        }
+    }
+
 
     public void StartLevel(int sceneIndex)
     {
@@ -48,7 +56,7 @@ public class GameStats : MonoBehaviour
         {
             levels[levelIndex].deaths = 0;
             levels[levelIndex].coinsCollected = 0;
-            firstEntry[levelIndex] = false; // Устанавливаем флаг в false после первого входа
+            firstEntry[levelIndex] = false; 
         }
     }
 
@@ -57,14 +65,13 @@ public class GameStats : MonoBehaviour
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].levelTime = Time.time - levelStartTime;
         levels[levelIndex].score = CalculateLevelScore(levelIndex);
-        SaveLevelStats(levelIndex); // Сохраняем данные после завершения уровня
+        SaveLevelStats(levelIndex);
     }
 
     public void AddDeath(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].deaths++;
-        SaveLevelStats(levelIndex); // Сохраняем обновленные данные
     }
 
     public void AddRestart(int sceneIndex)
@@ -74,19 +81,13 @@ public class GameStats : MonoBehaviour
         // Увеличиваем количество рестартов
         levels[levelIndex].restarts++;
         
-        // Сохраняем обновленные данные
-        SaveLevelStats(levelIndex);
     }
 
     public void AddCoins(int sceneIndex, int coins)
     {
         int levelIndex = ConvertIndex(sceneIndex);
-
-        // Добавляем монеты к текущему значению
         levels[levelIndex].coinsCollected += coins;
 
-        // Сохраняем обновленные данные
-        SaveLevelStats(levelIndex);
     }
 
     private int ConvertIndex(int sceneIndex)
@@ -117,6 +118,7 @@ public class GameStats : MonoBehaviour
                     (stats.coinsCollected * K_coins) +
                     (int)(remainingTime * K_time) -
                     penalty;
+
 
         if (stats.restarts == 0 && stats.deaths == 0)
         {

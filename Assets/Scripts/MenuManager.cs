@@ -9,7 +9,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private bool Pausable = true;
-
+    [SerializeField] private ResultsUI resultsUI;
     private InputAsset _input;
     private bool isPaused = false;
 
@@ -29,7 +29,7 @@ public class MenuManager : MonoBehaviour
             pauseMenu.SetActive(false);
         }
     }
-
+    
     private void OnEnable()
     {
         _input.UI.Pause.performed += OnPausePressed;
@@ -94,6 +94,16 @@ public class MenuManager : MonoBehaviour
             pauseMenu.SetActive(isPaused);
             Debug.Log($"Pause menu is now {(isPaused ? "active" : "inactive")}.");
         }
+    }
+    public void ResetStats()
+    {
+        GameStats.Instance.ResetStats();
+    }
+
+    public void LoadStats()
+    {
+        GameStats.Instance.LoadStats();
+        resultsUI.UpdateResults();
     }
     public void LoadScene(int sceneIndex)
     {
