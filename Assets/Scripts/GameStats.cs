@@ -41,7 +41,7 @@ public class GameStats : MonoBehaviour
         for (int i = 0; i < numberOfLevels; i++)
         {
             levels[i] = new LevelStats();
-            LoadLevelStats(i); // Загружаем данные из PlayerPrefs
+            LoadLevelStats(i);
         }
     }
 
