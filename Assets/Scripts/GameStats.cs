@@ -8,6 +8,9 @@ public class GameStats : MonoBehaviour
     public LevelStats[] levels; 
     private float levelStartTime;
 
+    // Флаги для отслеживания первого входа на уровень
+    private bool[] firstEntry;
+
     private void Awake()
     {
         if (Instance == null)
@@ -22,13 +25,16 @@ public class GameStats : MonoBehaviour
         }
     }
 
-    public void InitializeStats()
+    private void InitializeStats()
     {
         levels = new LevelStats[numberOfLevels];
+        firstEntry = new bool[numberOfLevels]; // Инициализация массива флагов
+
         for (int i = 0; i < numberOfLevels; i++)
         {
             levels[i] = new LevelStats();
             LoadLevelStats(i); // Загружаем данные из PlayerPrefs
+            firstEntry[i] = true; // Устанавливаем флаг первого входа в true
         }
     }
 
@@ -37,9 +43,13 @@ public class GameStats : MonoBehaviour
         int levelIndex = ConvertIndex(sceneIndex);
         levelStartTime = Time.time;
 
-        // Сбрасываем данные, которые относятся к текущей попытке
-        levels[levelIndex].coinsCollected = 0;
-        levels[levelIndex].levelTime = 0;
+        
+        if (firstEntry[levelIndex])
+        {
+            levels[levelIndex].deaths = 0;
+            levels[levelIndex].coinsCollected = 0;
+            firstEntry[levelIndex] = false; // Устанавливаем флаг в false после первого входа
+        }
     }
 
     public void EndLevel(int sceneIndex)
@@ -60,10 +70,10 @@ public class GameStats : MonoBehaviour
     public void AddRestart(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
-
+        
         // Увеличиваем количество рестартов
         levels[levelIndex].restarts++;
-
+        
         // Сохраняем обновленные данные
         SaveLevelStats(levelIndex);
     }
@@ -123,7 +133,7 @@ public class GameStats : MonoBehaviour
         PlayerPrefs.SetInt($"Level_{levelIndex}_Coins", levels[levelIndex].coinsCollected);
         PlayerPrefs.SetFloat($"Level_{levelIndex}_Time", levels[levelIndex].levelTime);
         PlayerPrefs.SetInt($"Level_{levelIndex}_Score", levels[levelIndex].score);
-
+        
         PlayerPrefs.Save(); // Сохраняем изменения в PlayerPrefs
     }
 
