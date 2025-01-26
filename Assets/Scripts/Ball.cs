@@ -98,14 +98,22 @@ public class Ball : MonoBehaviour
         }
         else if (_rb.linearVelocity.sqrMagnitude > 0.1f)
         {
+            // Плавное замедление
             Vector3 newVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero,
                 Time.fixedDeltaTime * decelerationRate);
             _rb.linearVelocity = new Vector3(newVelocity.x, _rb.linearVelocity.y, newVelocity.z);
+
+            // Замедление вращения
+            _rb.angularVelocity = Vector3.Lerp(_rb.angularVelocity, Vector3.zero,
+                Time.fixedDeltaTime * decelerationRate);
         }
         else
-        { 
+        {
+            // Полная остановка
             _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
         }
+
         // Гравитация
         _rb.AddForce(Vector3.up * gravity, ForceMode.Acceleration);
     }

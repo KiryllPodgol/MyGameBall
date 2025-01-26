@@ -1,26 +1,32 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI timerText;
+    [Header("UI")] [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI levelTitleText;
     [SerializeField] private TextMeshProUGUI scoreText;
-    [Header("Game Settings")]
-    [SerializeField] private float timeLimit = 20f;
+
+    [Header("Game Settings")] [SerializeField]
+    private float timeLimit = 20f;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private CameraFollow cameraFollow;
-    [Header("Portal Settings")]
-    [SerializeField] private float stopTimerDistance = 3f;
+
+    [Header("Portal Settings")] [SerializeField]
+    private float stopTimerDistance = 3f;
     [SerializeField] private Transform portalZone;
-    [Header("Timer Settings")]
-    [SerializeField] private float timerStartDelay = 5f;
-    [Header("Death Settings")]
-    [SerializeField] private GameObject deadBodyPrefab; // Префаб объекта, оставляемого после смерти
+    
+    [Header("Timer Settings")] [SerializeField]
+    private float timerStartDelay = 5f;
+    
+    [Header("Death Settings")] [SerializeField]
+    private GameObject deadBodyPrefab;
+    [SerializeField] private Vector3 offset = new Vector3(32f, 0f, 0f);
     [SerializeField] private float invulnerabilityDuration = 5f; // Время неуязвимости после смерти
 
     private float _timeRemaining;
@@ -29,7 +35,7 @@ public class GameManager : MonoBehaviour
     private GameObject _player;
     private int _score;
     private int _initialScore;
-    private bool _isInvulnerable = false; // Флаг неуязвимости
+    private bool _isInvulnerable = false;
 
     private void Start()
     {
@@ -56,6 +62,7 @@ public class GameManager : MonoBehaviour
         UpdateTimerUI();
         Collectible.OnCollected += OnCollectibleCollected;
     }
+
     private void OnDestroy()
     {
         Collectible.OnCollected -= OnCollectibleCollected;
@@ -80,6 +87,7 @@ public class GameManager : MonoBehaviour
         {
             ToggleTimer(false);
         }
+
         if (HasPlayerFallen())
         {
             RestartLevel();
@@ -126,6 +134,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
         return false;
     }
 
@@ -173,7 +182,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            timerText.text = string.Format("Time Left: {0:00}:{1:00}", minutes, seconds);
+            timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
@@ -213,6 +222,7 @@ public class GameManager : MonoBehaviour
         float distanceToPortal = Vector3.Distance(_player.transform.position, portalZone.position);
         return distanceToPortal <= 1f;
     }
+
     public void AddScore(int amount)
     {
         _score += amount;
@@ -224,26 +234,49 @@ public class GameManager : MonoBehaviour
         if (_isInvulnerable) return;
         if (collision.gameObject.TryGetComponent<Death>(out Death deathComponent))
         {
-            Death(); 
+            Death();
         }
     }
-
     public void Death()
     {
         if (GameStats.Instance != null)
         {
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-            GameStats.Instance.AddDeath(currentLevelIndex); // Увеличиваем счетчик смертей
+            GameStats.Instance.AddDeath(currentLevelIndex);
         }
 
+        // Создаем тело игрока после смерти
+        Vector3 deathPosition = _player.transform.position;
         if (deadBodyPrefab != null)
         {
-            Instantiate(deadBodyPrefab, _player.transform.position, Quaternion.identity);
+            Instantiate(deadBodyPrefab, deathPosition, Quaternion.identity);
         }
 
-        RestartLevel();
-    }
+        // Удаляем текущего игрока
+        if (_player != null)
+        {
+            Destroy(_player);
+        }
 
+        // Запускаем респавн игрока с учетом смещения
+        StartCoroutine(RespawnPlayer(deathPosition));
+    }
+    
+    private IEnumerator RespawnPlayer(Vector3 deathPosition)
+    {
+        _isInvulnerable = true; // Включаем неуязвимость
+
+        // Ждем 2 секунды перед респавном
+        yield return new WaitForSeconds(2f);
+        
+        Vector3 respawnPosition = deathPosition + offset;
+
+        // Респавним игрока
+        SpawnPlayer(respawnPosition, Quaternion.identity);
+        
+        yield return new WaitForSeconds(invulnerabilityDuration);
+        _isInvulnerable = false; // Выключаем неуязвимость
+    }
     private void SpawnPlayer(Vector3 position, Quaternion rotation)
     {
         _player = Instantiate(playerPrefab, position, rotation);
@@ -253,13 +286,4 @@ public class GameManager : MonoBehaviour
             cameraFollow.SetTarget(_player.transform);
         }
     }
-
-    private IEnumerator RespawnPlayer(Vector3 position)
-    {
-        _isInvulnerable = true;
-        yield return new WaitForSeconds(2f); 
-        SpawnPlayer(position, Quaternion.identity);
-        yield return new WaitForSeconds(invulnerabilityDuration);
-        _isInvulnerable = false;
-    }
-} 
+}

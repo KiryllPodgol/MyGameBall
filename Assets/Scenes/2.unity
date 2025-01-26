@@ -318,6 +318,10 @@ PrefabInstance:
       propertyPath: m_horizontalMapping
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7301216005176166123, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8271931683775848137, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: m_Name
       value: "GameManager \u0414\u043B\u044F \u0443\u0440\u043E\u0432\u043D\u0435\u0439"

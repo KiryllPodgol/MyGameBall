@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 public class ResultsUI : MonoBehaviour
 {
-    public GameObject levelResultPrefab;
+    public LevelResult levelResultPrefab;
     public Transform resultsContainer;
-
-    private List<GameObject> levelResultInstances = new List<GameObject>();
+    private List<LevelResult> levelResultInstances = new List<LevelResult>();
 
     private void Start()
     {
@@ -32,12 +31,11 @@ public class ResultsUI : MonoBehaviour
             for (int i = 0; i < levelsToShow; i++)
             {
                 var levelStats = GameStats.Instance.levels[i];
-                GameObject instance = Instantiate(levelResultPrefab, resultsContainer);
-                LevelResult levelResult = instance.GetComponent<LevelResult>();
+                LevelResult levelResult = Instantiate(levelResultPrefab, resultsContainer);
                 levelResult.SetLevelResult(levelStats, i);
-                levelResultInstances.Add(instance);
+                levelResultInstances.Add(levelResult);
 
-                RectTransform rectTransform = instance.GetComponent<RectTransform>();
+                RectTransform rectTransform = levelResult.GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = new Vector2(0, -height * i);
             }
         }
