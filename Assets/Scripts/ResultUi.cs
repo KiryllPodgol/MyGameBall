@@ -10,6 +10,7 @@ public class ResultsUI : MonoBehaviour
 
     private void Start()
     {
+        PlayerPrefs.DeleteAll();
         UpdateResults();
     }
 
