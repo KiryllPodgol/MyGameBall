@@ -73091,6 +73091,8 @@ MonoBehaviour:
   musicSource: {fileID: 0}
   volumeSlider: {fileID: 0}
   pauseMenu: {fileID: 1039658617}
+  Pausable: 1
+  resultsUI: {fileID: 0}
 --- !u!1 &2131542662
 GameObject:
   m_ObjectHideFlags: 0
