@@ -65,7 +65,7 @@ public class GameStats : MonoBehaviour
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].levelTime = Time.time - levelStartTime;
         levels[levelIndex].score = CalculateLevelScore(levelIndex);
-        SaveLevelStats(levelIndex);
+        UpdateLevelBest(levelIndex);
     }
 
     public void AddDeath(int sceneIndex)
@@ -127,6 +127,19 @@ public class GameStats : MonoBehaviour
 
         return Mathf.Max(score, 0);
     }
+    private void UpdateLevelBest(int levelIndex)
+    {
+       
+        int savedScore = PlayerPrefs.GetInt($"Level_{levelIndex}_Score", 0);
+
+        var currentStats = levels[levelIndex];
+
+        
+        if (currentStats.score > savedScore)
+        {
+            SaveLevelStats(levelIndex);
+        }
+    }
 
     private void SaveLevelStats(int levelIndex)
     {
@@ -135,7 +148,6 @@ public class GameStats : MonoBehaviour
         PlayerPrefs.SetInt($"Level_{levelIndex}_Coins", levels[levelIndex].coinsCollected);
         PlayerPrefs.SetFloat($"Level_{levelIndex}_Time", levels[levelIndex].levelTime);
         PlayerPrefs.SetInt($"Level_{levelIndex}_Score", levels[levelIndex].score);
-        
         PlayerPrefs.Save(); // Сохраняем изменения в PlayerPrefs
     }
 

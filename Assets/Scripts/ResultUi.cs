@@ -10,7 +10,6 @@ public class ResultsUI : MonoBehaviour
 
     private void Start()
     {
-        PlayerPrefs.DeleteAll();
         UpdateResults();
     }
 
@@ -21,7 +20,7 @@ public class ResultsUI : MonoBehaviour
             // Удаляем старые префабы
             foreach (var instance in levelResultInstances)
             {
-                Destroy(instance);
+                Destroy(instance.gameObject);
             }
 
             levelResultInstances.Clear();
