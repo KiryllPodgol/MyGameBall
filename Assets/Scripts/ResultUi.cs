@@ -9,7 +9,7 @@ public class ResultsUI : MonoBehaviour
     private List<LevelResult> levelResultInstances = new List<LevelResult>();
 
     private void Start()
-    {
+    { 
         UpdateResults();
     }
 

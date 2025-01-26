@@ -27,7 +27,7 @@ public class SceneTransition : MonoBehaviour
         animator = GetComponent<Animator>();
         if (animator == null)
         {
-            Debug.LogError("Awake: Не удалось найти Animator! Проверьте наличие компонента Animator.");
+            // Debug.LogError("Awake: Не удалось найти Animator! Проверьте наличие компонента Animator.");
         }
     }
 
@@ -45,28 +45,28 @@ public class SceneTransition : MonoBehaviour
     {
         if (ShouldPlayOpeningAnimation)
         {
-            Debug.Log("OnLevelFinishedLoading: Проигрывание анимации открытия.");
+            // Debug.Log("OnLevelFinishedLoading: Проигрывание анимации открытия.");
             animator.SetTrigger("SceneOpening");
             ShouldPlayOpeningAnimation = false;
         }
         else
         {
-            Debug.Log("OnLevelFinishedLoading did not play opening animation");
+            // Debug.Log("OnLevelFinishedLoading did not play opening animation");
         }
     }
 
     public static void SwitchSceneWithLoading(int targetSceneIndex)
     {
-        Debug.Log("Попытка переключить сцену с индексом: " + targetSceneIndex);
+        // Debug.Log("Попытка переключить сцену с индексом: " + targetSceneIndex);
 
         if (_instance == null)
         {
-            Debug.LogError("Instance SceneTransition не найден! Убедитесь, что компонент добавлен в начальную сцену.");
+            // Debug.LogError("Instance SceneTransition не найден! Убедитесь, что компонент добавлен в начальную сцену.");
             return;
         }
         if (_instance.animator != null)
         {
-            Debug.Log("Запуск анимации закрытия сцены.");
+            // Debug.Log("Запуск анимации закрытия сцены.");
             _instance.animator.SetTrigger("SceneClosing");
         }
         _instance.StartCoroutine(_instance.LoadSceneWithLoading(targetSceneIndex));
@@ -75,16 +75,16 @@ public class SceneTransition : MonoBehaviour
     private IEnumerator LoadSceneWithLoading(int targetSceneIndex)
     {
         ShouldPlayOpeningAnimation = false;
-        Debug.Log("Начало загрузки сцены с индексом: " + targetSceneIndex);
+        // Debug.Log("Начало загрузки сцены с индексом: " + targetSceneIndex);
         yield return new WaitForSecondsRealtime(1f);
 
-        Debug.Log("Загрузка сцены подложки 'LoadingScene'.");
+        // Debug.Log("Загрузка сцены подложки 'LoadingScene'.");
         SceneManager.LoadScene("LoadingScene");
 
         // Даем немного времени, чтобы сцена подложки успела отобразиться
         yield return new WaitForSecondsRealtime(0.5f);
         yield return null;
-        Debug.Log("Запуск асинхронной загрузки целевой сцены.");
+        // Debug.Log("Запуск асинхронной загрузки целевой сцены.");
 
         loadingSceneOperation = SceneManager.LoadSceneAsync(targetSceneIndex);
         loadingSceneOperation.allowSceneActivation = false;
@@ -94,14 +94,14 @@ public class SceneTransition : MonoBehaviour
             if (LoadingPercentage != null)
             {
                 LoadingPercentage.text = Mathf.RoundToInt(progress * 100) + "%";
-                Debug.Log("Прогресс загрузки: " + Mathf.RoundToInt(progress * 100) + "%");
+                // Debug.Log("Прогресс загрузки: " + Mathf.RoundToInt(progress * 100) + "%");
             }
 
             if (LoadingProgress != null)
                 LoadingProgress.fillAmount = progress;
             if (loadingSceneOperation.progress >= 0.9f)
             {
-                Debug.Log("Загрузка сцены завершена на 90%, ожидаем завершения анимации.");
+                // Debug.Log("Загрузка сцены завершена на 90%, ожидаем завершения анимации.");
                 yield return new WaitForSecondsRealtime(1f);
                 break;
             }
@@ -110,17 +110,17 @@ public class SceneTransition : MonoBehaviour
             yield return null;
         }
         
-        Debug.Log("Загрузка целевой сцены завершена. Активируем сцену.");
+        // Debug.Log("Загрузка целевой сцены завершена. Активируем сцену.");
         ShouldPlayOpeningAnimation = true;
         loadingSceneOperation.allowSceneActivation = true;
     }
 
     public void OnAnimationOver()
     {
-        Debug.Log("Анимация завершена.");
+        // Debug.Log("Анимация завершена.");
         if (loadingSceneOperation != null)
         {
-            Debug.Log("Разрешаем активацию целевой сцены.");
+            // Debug.Log("Разрешаем активацию целевой сцены.");
             loadingSceneOperation.allowSceneActivation = true; 
         }
     }

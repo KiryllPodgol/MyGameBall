@@ -87,7 +87,6 @@ public class GameStats : MonoBehaviour
     {
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].coinsCollected += coins;
-
     }
 
     private int ConvertIndex(int sceneIndex)
@@ -99,7 +98,7 @@ public class GameStats : MonoBehaviour
     {
         // Константы
         int baseScore = 100;
-        int K_coins = 10;
+        int K_coins = 20;
         int K_time = 2;
         int K_restarts = 50;
         int K_deaths = 100;
@@ -129,17 +128,31 @@ public class GameStats : MonoBehaviour
     }
     private void UpdateLevelBest(int levelIndex)
     {
-       
+        // Log the method entry with the level index
+
         int savedScore = PlayerPrefs.GetInt($"Level_{levelIndex}_Score", 0);
 
         var currentStats = levels[levelIndex];
 
-        
+        // Log the comparison of current score and saved score
+        Debug.Log($"New score =" + currentStats.score + ", previous score =" + savedScore);
+
         if (currentStats.score > savedScore)
         {
+            // Log when the score is higher and the stats will be saved
+            Debug.Log($"Save new Stats");
             SaveLevelStats(levelIndex);
         }
+        else
+        {
+            // Log when no new high score is found
+            Debug.Log($"Leving prev stats");
+        }
+
+        // Log method exit
+        Debug.Log($"Exiting UpdateLevelBest for Level {levelIndex}");
     }
+
 
     private void SaveLevelStats(int levelIndex)
     {
