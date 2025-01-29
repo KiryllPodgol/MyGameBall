@@ -50,12 +50,6 @@ public class MenuManager : MonoBehaviour
     private void OnDisable()
     {
         _input.UI.Pause.performed -= OnPausePressed;
-        
-        if (volumeSlider != null)
-        {
-            volumeSlider.onValueChanged.RemoveListener(UpdateVolume);
-        }
-
         _input.UI.Disable();
     }
 
