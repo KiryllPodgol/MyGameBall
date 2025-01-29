@@ -60,17 +60,17 @@ public class GameManager : MonoBehaviour
         UpdateScoreUI();
         StartCoroutine(StartTimerWithDelay());
         UpdateTimerUI();
-        Collectible.OnCollected += OnCollectibleCollected;
+        GameEvents.OnCollectibleCollected += OnCollectibleCollected;
     }
 
     private void OnDestroy()
     {
-        Collectible.OnCollected -= OnCollectibleCollected;
+        GameEvents.OnCollectibleCollected -= OnCollectibleCollected;
     }
 
     private void OnCollectibleCollected()
     {
-        AddScore(100);
+        AddScore(1);
     }
 
     private void Update()
@@ -192,7 +192,7 @@ public class GameManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = $"Очков: {_score}";
+            scoreText.text = $"Монет: {_score}";
         }
     }
 

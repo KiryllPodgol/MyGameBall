@@ -6,7 +6,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private Slider volumeSlider;
 
-    private const string VolumePrefKey = "MusicVolume"; 
+    private const string VolumePrefKey = "MusicVolume";
 
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class MusicManager : MonoBehaviour
     {
         if (musicSource != null)
         {
-            musicSource.volume = volume;
+            GameEvents.VolumeChanged(volume);
             PlayerPrefs.SetFloat(VolumePrefKey, volume); 
             PlayerPrefs.Save();
         }

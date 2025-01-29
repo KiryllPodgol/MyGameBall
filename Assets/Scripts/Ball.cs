@@ -12,7 +12,6 @@ public class Ball : MonoBehaviour
     [SerializeField] private LayerMask groundLayer; 
     [SerializeField] private float groundCheckDistance = 1f;
     [SerializeField] private float decelerationRate = 2f; // Скорость замедления
-    [SerializeField] private float slowMoTimeScale = 0.3f;
     private float _originalFixedDeltaTime;
     private bool _isSlowMotion;
     private Vector3 _moveDirection;

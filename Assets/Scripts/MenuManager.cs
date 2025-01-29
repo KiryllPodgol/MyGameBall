@@ -5,31 +5,42 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-    [SerializeField] private AudioSource musicSource;
+    [Header("UI Elements")]
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private GameObject pauseMenu;
+
+    [Header("Results")]
+    [SerializeField] private ResultsUI resultsUI; 
+
+    [Header("Settings")]
     [SerializeField] private bool Pausable = true;
-    [SerializeField] private ResultsUI resultsUI;
+
     private InputAsset _input;
     private bool isPaused = false;
+
+    private const string VolumePrefKey = "MusicVolume";
 
     private void Awake()
     {
         Time.timeScale = 1f;
         _input = new InputAsset();
 
-        if (musicSource != null && volumeSlider != null)
+        // Инициализация громкости
+        float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0.5f);
+        
+        if (volumeSlider != null)
         {
-            volumeSlider.value = musicSource.volume;
-            volumeSlider.onValueChanged.AddListener(MusicVolume);
+            volumeSlider.value = savedVolume;
+            volumeSlider.onValueChanged.AddListener(UpdateVolume);
         }
 
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
+        GameEvents.VolumeChanged(savedVolume);
     }
-    
+
     private void OnEnable()
     {
         _input.UI.Pause.performed += OnPausePressed;
@@ -39,10 +50,12 @@ public class MenuManager : MonoBehaviour
     private void OnDisable()
     {
         _input.UI.Pause.performed -= OnPausePressed;
+        
         if (volumeSlider != null)
         {
-            volumeSlider.onValueChanged.RemoveListener(MusicVolume);
+            volumeSlider.onValueChanged.RemoveListener(UpdateVolume);
         }
+
         _input.UI.Disable();
     }
 
@@ -58,12 +71,13 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void MusicVolume(float volume)
+    public void UpdateVolume(float volume)
     {
-        if (musicSource != null)
-        {
-            musicSource.volume = volume;
-        }
+        GameEvents.VolumeChanged(volume);
+        PlayerPrefs.SetFloat(VolumePrefKey, volume);
+        PlayerPrefs.Save();
+        
+        Debug.Log($"Volume updated to {volume}");
     }
 
     public void ExitApplication()
@@ -95,6 +109,7 @@ public class MenuManager : MonoBehaviour
             Debug.Log($"Pause menu is now {(isPaused ? "active" : "inactive")}.");
         }
     }
+
     public void ResetStats()
     {
         GameStats.Instance.ResetStats();
@@ -103,8 +118,10 @@ public class MenuManager : MonoBehaviour
     public void LoadStats()
     {
         GameStats.Instance.LoadStats();
-        resultsUI.UpdateResults();
+        if (resultsUI != null)
+            resultsUI.UpdateResults();
     }
+
     public void LoadScene(int sceneIndex)
     {
         if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
