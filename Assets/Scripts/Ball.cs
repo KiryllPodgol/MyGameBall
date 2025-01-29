@@ -12,6 +12,9 @@ public class Ball : MonoBehaviour
     [SerializeField] private LayerMask groundLayer; 
     [SerializeField] private float groundCheckDistance = 1f;
     [SerializeField] private float decelerationRate = 2f; // Скорость замедления
+    [SerializeField] private float slowMoTimeScale = 0.3f;
+    private float _originalFixedDeltaTime;
+    private bool _isSlowMotion;
     private Vector3 _moveDirection;
     private CameraFollow _cameraFollow;
     private bool _isGrounded;
@@ -30,6 +33,7 @@ public class Ball : MonoBehaviour
             Debug.LogError("Main Camera not found! Please assign a camera with the CameraFollow script.");
             enabled = false;
         }
+        _originalFixedDeltaTime = Time.fixedDeltaTime;
     }
 
     private void OnEnable()
@@ -40,7 +44,23 @@ public class Ball : MonoBehaviour
         _input.Gameplay.Jump.performed += JumpOnPerformed;
         _input.Gameplay.Run.performed += RunOnPerformed;
         _input.Gameplay.Run.canceled += RunOnCanceled;
+        _input.Gameplay.SlowMotion.performed += SlowMotionOnperformed;
+        _input.Gameplay.SlowMotion.canceled += SlowMotionOncanceled;
     }
+    private void SlowMotionOnperformed(InputAction.CallbackContext obj)
+    {
+        _isSlowMotion = true;
+        Time.timeScale = 0.2f;
+        Time.fixedDeltaTime = _originalFixedDeltaTime * Time.timeScale;
+    }
+
+    private void SlowMotionOncanceled(InputAction.CallbackContext obj)
+    {
+        _isSlowMotion = false;
+        Time.timeScale = 1f; 
+        Time.fixedDeltaTime = _originalFixedDeltaTime; 
+    }
+    
 
     private void OnDisable()
     {
@@ -49,6 +69,8 @@ public class Ball : MonoBehaviour
         _input.Gameplay.Jump.performed -= JumpOnPerformed;
         _input.Gameplay.Run.performed -= RunOnPerformed;
         _input.Gameplay.Run.canceled -= RunOnCanceled;
+        _input.Gameplay.SlowMotion.performed -= SlowMotionOnperformed;
+        _input.Gameplay.SlowMotion.canceled -= SlowMotionOncanceled;
         _input.Gameplay.Disable();
     }
 
@@ -79,7 +101,6 @@ public class Ball : MonoBehaviour
             _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
-
     private void FixedUpdate()
     {
         CheckGround();
