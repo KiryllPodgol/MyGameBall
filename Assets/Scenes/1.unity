@@ -1227,7 +1227,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8683037978208814014, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
   m_PrefabInstance: {fileID: 2468210120067313881}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &501712828
+--- !u!82 &501712829 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8466617612423273470, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
+  m_PrefabInstance: {fileID: 2468210120067313881}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &501712831
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1236,16 +1241,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 501712826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d449d3875b78f794d898b75a7c912ff5, type: 3}
+  m_Script: {fileID: 11500000, guid: 833bd8447bcde3342bbaa37634491139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSource: {fileID: 501712829}
-  volumeSlider: {fileID: 2093123461}
---- !u!82 &501712829 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8466617612423273470, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
-  m_PrefabInstance: {fileID: 2468210120067313881}
-  m_PrefabAsset: {fileID: 0}
+  audioSource: {fileID: 501712829}
 --- !u!1 &607298048
 GameObject:
   m_ObjectHideFlags: 0
@@ -2811,6 +2810,7 @@ GameObject:
   - component: {fileID: 996087376}
   - component: {fileID: 996087378}
   - component: {fileID: 996087377}
+  - component: {fileID: 996087379}
   m_Layer: 5
   m_Name: MusicContoll
   m_TagString: Untagged
@@ -2876,6 +2876,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 996087375}
   m_CullTransparentMesh: 1
+--- !u!114 &996087379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996087375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195dec3ff80750941994473948406790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 2093123461}
+  pauseMenu: {fileID: 0}
+  resultsUI: {fileID: 0}
+  Pausable: 1
 --- !u!1 &1050151488
 GameObject:
   m_ObjectHideFlags: 0
@@ -6644,7 +6660,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8683037978208814014, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 501712828}
+      addedObject: {fileID: 501712831}
   m_SourcePrefab: {fileID: 100100000, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
 --- !u!1001 &7067372136827817312
 PrefabInstance:

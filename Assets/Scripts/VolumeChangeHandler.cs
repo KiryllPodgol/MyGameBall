@@ -8,6 +8,7 @@ public class VolumeChangeHandler : MonoBehaviour
     {
         if (audioSource != null)
         {
+            audioSource = GetComponent<AudioSource>();
             GameEvents.OnVolumeChanged += UpdateVolume;
         }
     }
