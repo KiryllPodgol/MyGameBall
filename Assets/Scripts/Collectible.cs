@@ -25,11 +25,13 @@ public class Collectible : MonoBehaviour
             if (collectSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(collectSound);
+                Debug.Log($"Collectible sound started playing with volume: {audioSource.volume}");
             }
-            
-            GameEvents.CollectibleCollected();
 
-            Destroy(gameObject);
+            GameEvents.CollectibleCollected();
+            gameObject.SetActive(false);
+            Destroy(gameObject, collectSound.length);
         }
     }
 }
+
