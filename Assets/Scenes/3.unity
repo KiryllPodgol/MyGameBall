@@ -263,6 +263,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6130831730244778243, guid: 1c34c8c27bfd352428fb00a48f74c4a9, type: 3}
   m_PrefabInstance: {fileID: 6575885620781195761}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &66972248 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8683037978208814014, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
+  m_PrefabInstance: {fileID: 222591244}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &66972250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66972248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 833bd8447bcde3342bbaa37634491139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &69962784
 GameObject:
   m_ObjectHideFlags: 0
@@ -19340,7 +19357,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8683037978208814014, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 377964650}
+      addedObject: {fileID: 66972250}
   m_SourcePrefab: {fileID: 100100000, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
 --- !u!1 &244043677
 GameObject:
@@ -20190,30 +20207,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 374980119}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &377964648 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8683037978208814014, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
-  m_PrefabInstance: {fileID: 222591244}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &377964650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 377964648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d449d3875b78f794d898b75a7c912ff5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  musicSource: {fileID: 377964651}
-  volumeSlider: {fileID: 724376796}
---- !u!82 &377964651 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 8466617612423273470, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
-  m_PrefabInstance: {fileID: 222591244}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &431419312
 GameObject:
   m_ObjectHideFlags: 0
@@ -20256,6 +20249,7 @@ GameObject:
   - component: {fileID: 431496891}
   - component: {fileID: 431496893}
   - component: {fileID: 431496892}
+  - component: {fileID: 431496894}
   m_Layer: 5
   m_Name: MusicContoll
   m_TagString: Untagged
@@ -20321,6 +20315,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 431496890}
   m_CullTransparentMesh: 1
+--- !u!114 &431496894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431496890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195dec3ff80750941994473948406790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 0}
+  pauseMenu: {fileID: 0}
+  resultsUI: {fileID: 0}
+  Pausable: 1
 --- !u!1 &461952955
 GameObject:
   m_ObjectHideFlags: 0
@@ -20785,8 +20795,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_UseSpring: 0
   m_Spring:
-    spring: 10.92
-    damper: 5
+    spring: 0
+    damper: 0
     targetPosition: 0
   m_UseMotor: 1
   m_Motor:
@@ -20806,7 +20816,7 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 10
   m_ConnectedMassScale: 1
 --- !u!54 &531965539
 Rigidbody:
@@ -21992,8 +22002,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_UseSpring: 0
   m_Spring:
-    spring: 10.92
-    damper: 5
+    spring: 0
+    damper: 0
     targetPosition: 0
   m_UseMotor: 1
   m_Motor:
@@ -22013,7 +22023,7 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 10
   m_ConnectedMassScale: 1
 --- !u!54 &670300081
 Rigidbody:
@@ -23569,8 +23579,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_UseSpring: 0
   m_Spring:
-    spring: 10.92
-    damper: 5
+    spring: 0
+    damper: 0
     targetPosition: 0
   m_UseMotor: 1
   m_Motor:
@@ -23590,7 +23600,7 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 10
   m_ConnectedMassScale: 1
 --- !u!54 &979313538
 Rigidbody:
@@ -44542,8 +44552,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_UseSpring: 0
   m_Spring:
-    spring: 10.92
-    damper: 5
+    spring: 0
+    damper: 0
     targetPosition: 0
   m_UseMotor: 1
   m_Motor:
@@ -44563,7 +44573,7 @@ HingeJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 1
+  m_MassScale: 10
   m_ConnectedMassScale: 1
 --- !u!54 &1645800584
 Rigidbody:

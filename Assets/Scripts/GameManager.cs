@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
 
     private bool HasPlayerFallen()
     {
-        const float fallThreshold = -10f;
+        const float fallThreshold = -3f;
         const float raycastDistance = 1.5f;
         LayerMask groundMask = LayerMask.GetMask("Ground");
 

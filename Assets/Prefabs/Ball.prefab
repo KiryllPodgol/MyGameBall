@@ -108,11 +108,11 @@ MonoBehaviour:
   runMultiplier: 2
   gravity: -9.81
   jumpForce: 15
-  rotationSpeed: 10
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
   groundCheckDistance: 2
+  decelerationRate: 2
 --- !u!54 &7894654596945670788
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -159,7 +159,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.49999997
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2376509054889231180
 GameObject:

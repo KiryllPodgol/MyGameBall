@@ -26,7 +26,7 @@ public class MenuManager : MonoBehaviour
         _input = new InputAsset();
 
         // Инициализация громкости
-        float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0.0f);
+        float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0.5f);
         
         if (volumeSlider != null)
         {

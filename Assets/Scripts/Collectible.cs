@@ -9,7 +9,7 @@ public class Collectible : MonoBehaviour
 
     private void Awake()
     {
-        audioSource = GetComponent<AudioSource>(); 
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -22,7 +22,6 @@ public class Collectible : MonoBehaviour
             {
                 panelScore.SetActive(true);
             }
-            
             if (collectSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(collectSound);
