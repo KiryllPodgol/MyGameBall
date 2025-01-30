@@ -4,7 +4,13 @@ public class Collectible : MonoBehaviour
 {
     [SerializeField] private AudioClip collectSound;
     [SerializeField] private GameObject panelScore;
+    private AudioSource audioSource;
     private bool _isCollected;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>(); 
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -16,10 +22,10 @@ public class Collectible : MonoBehaviour
             {
                 panelScore.SetActive(true);
             }
-
-            if (collectSound != null)
+            
+            if (collectSound != null && audioSource != null)
             {
-                AudioSource.PlayClipAtPoint(collectSound, transform.position);
+                audioSource.PlayOneShot(collectSound);
             }
             
             GameEvents.CollectibleCollected();

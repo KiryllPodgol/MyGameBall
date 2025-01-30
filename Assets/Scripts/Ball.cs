@@ -13,7 +13,7 @@ public class Ball : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 1f;
     [SerializeField] private float decelerationRate = 2f; // Скорость замедления
     private float _originalFixedDeltaTime;
-    private bool _isSlowMotion;
+    private bool _isSlowMotion = false;
     private Vector3 _moveDirection;
     private CameraFollow _cameraFollow;
     private bool _isGrounded;
@@ -140,7 +140,9 @@ public class Ball : MonoBehaviour
     private void CheckGround()
     {
         RaycastHit hit;
-        _isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance, groundLayer);
+        float sphereRadius = 0.5f; // Радиус сферы
+        _isGrounded = Physics.SphereCast(transform.position, sphereRadius, Vector3.down, out hit, groundCheckDistance, groundLayer);
+
 
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, _isGrounded ? Color.green : Color.red);
     }

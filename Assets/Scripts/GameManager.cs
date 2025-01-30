@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
 
         if (GameStats.Instance != null)
         {
-            GameStats.Instance.StartLevel(currentLevelIndex); // Начинаем отслеживание времени уровня
+            GameStats.Instance.StartLevel(currentLevelIndex);
         }
 
         SetLevelTitle();

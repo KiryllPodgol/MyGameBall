@@ -22,11 +22,11 @@ public class MenuManager : MonoBehaviour
 
     private void Awake()
     {
-        Time.timeScale = 1f;
+        
         _input = new InputAsset();
 
         // Инициализация громкости
-        float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0.5f);
+        float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0.0f);
         
         if (volumeSlider != null)
         {
