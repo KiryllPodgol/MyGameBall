@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -20,11 +21,15 @@ public class MenuManager : MonoBehaviour
 
     private const string VolumePrefKey = "MusicVolume";
 
+
     private void Awake()
     {
-        
         _input = new InputAsset();
+    }
 
+    private void Start()
+    {
+         Time.timeScale = 1f;
         // Инициализация громкости
         float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0f);
         

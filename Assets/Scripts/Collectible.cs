@@ -8,7 +8,7 @@ public class Collectible : MonoBehaviour
     private bool _isCollected;
 
     private void Awake()
-    {
+    {   
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -29,7 +29,7 @@ public class Collectible : MonoBehaviour
             }
 
             GameEvents.CollectibleCollected();
-            gameObject.SetActive(false);
+            GetComponent<Renderer>().enabled = false;
             Destroy(gameObject, collectSound.length);
         }
     }

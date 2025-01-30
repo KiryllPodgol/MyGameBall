@@ -258,6 +258,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4376356107609855465, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
+      propertyPath: volumeSlider
+      value: 
+      objectReference: {fileID: 1042361126}
     - target: {fileID: 5293912194102952323, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2

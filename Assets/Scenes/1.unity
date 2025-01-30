@@ -11091,7 +11091,6 @@ GameObject:
   - component: {fileID: 996087376}
   - component: {fileID: 996087378}
   - component: {fileID: 996087377}
-  - component: {fileID: 996087379}
   m_Layer: 5
   m_Name: MusicContoll
   m_TagString: Untagged
@@ -11157,22 +11156,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 996087375}
   m_CullTransparentMesh: 1
---- !u!114 &996087379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 996087375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 195dec3ff80750941994473948406790, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  volumeSlider: {fileID: 2093123461}
-  pauseMenu: {fileID: 0}
-  resultsUI: {fileID: 0}
-  Pausable: 1
 --- !u!4 &996569315 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 108225653778528902, guid: 3e2accafa3a5f1b40ba86cf39bcb49a7, type: 3}
@@ -22145,9 +22128,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4583983890657914560, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
+      propertyPath: Pausable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4583983890657914560, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
       propertyPath: pauseMenu
       value: 
       objectReference: {fileID: 721215583}
+    - target: {fileID: 4583983890657914560, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
+      propertyPath: volumeSlider
+      value: 
+      objectReference: {fileID: 2093123461}
     - target: {fileID: 7345068041139525595, guid: d07a8a1952a38ed4689e42462493dae7, type: 3}
       propertyPath: m_Name
       value: GameManager
