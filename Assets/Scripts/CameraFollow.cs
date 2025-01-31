@@ -10,11 +10,9 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private float followSpeed = 10f;
     [SerializeField] private LayerMask obstacleLayers; 
     [SerializeField] private float cameraRadius = 0.5f;
-
     private Transform _target;
     private float _yaw = 0f;
     private float _pitch = 0f;
-
     private void Start()
     {
        
@@ -22,17 +20,22 @@ public class CameraFollow : MonoBehaviour
     }
     private void UpdateCursorState()
     {
+ 
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        if (currentSceneIndex == 5)
+ 
+        int lastSceneIndex = SceneManager.sceneCountInBuildSettings - 1;
+
+       
+        if (currentSceneIndex == lastSceneIndex)
         {
-            Cursor.lockState = CursorLockMode.None; // Разблокировать курсор
-            Cursor.visible = true; // Сделать курсор видимым
+            Cursor.lockState = CursorLockMode.None; 
+            Cursor.visible = true;                
         }
         else
         {
-            Cursor.lockState = CursorLockMode.Locked; // Заблокировать курсор
-            Cursor.visible = false; // Скрыть курсор
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;                
         }
     }
     private void FixedUpdate()
