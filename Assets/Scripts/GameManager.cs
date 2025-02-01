@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     [Header("Death Settings")] [SerializeField]
     private GameObject deadBodyPrefab;
     [SerializeField] private Vector3 offset = new Vector3(32f, 0f, 0f);
-    [SerializeField] private float invulnerabilityDuration = 5f; // Время неуязвимости после смерти
+    [SerializeField] private float invulnerabilityDuration = 5f;
 
     private float _timeRemaining;
     private bool _isGameActive;
@@ -57,22 +57,9 @@ public class GameManager : MonoBehaviour
         _isGameActive = true;
         _isTimerActive = false;
         _initialScore = _score;
-        UpdateScoreUI();
         StartCoroutine(StartTimerWithDelay());
         UpdateTimerUI();
-        GameEvents.OnCollectibleCollected += OnCollectibleCollected;
     }
-
-    private void OnDestroy()
-    {
-        GameEvents.OnCollectibleCollected -= OnCollectibleCollected;
-    }
-
-    private void OnCollectibleCollected()
-    {
-        AddScore(1);
-    }
-
     private void Update()
     {
         if (!_isGameActive) return;
@@ -156,8 +143,6 @@ public class GameManager : MonoBehaviour
 
         if (isWin)
         {
-            _score += Mathf.FloorToInt(_timeRemaining) * 10;
-            UpdateScoreUI();
 
             timerText.text = "You Win!";
             timerText.color = Color.green;
@@ -187,14 +172,7 @@ public class GameManager : MonoBehaviour
 
         timerText.color = _isTimerActive && _timeRemaining <= 10 ? Color.red : Color.white;
     }
-
-    private void UpdateScoreUI()
-    {
-        if (scoreText != null)
-        {
-            scoreText.text = $"Монет: {_score}";
-        }
-    }
+    
 
     public void RestartLevel()
     {
@@ -203,7 +181,6 @@ public class GameManager : MonoBehaviour
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
             GameStats.Instance.AddRestart(currentLevelIndex);
         }
-
         _score = _initialScore;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -223,12 +200,7 @@ public class GameManager : MonoBehaviour
         return distanceToPortal <= 1f;
     }
 
-    public void AddScore(int amount)
-    {
-        _score += amount;
-        UpdateScoreUI();
-    }
-
+   
     public void OnCollisionEnter(Collision collision)
     {
         if (_isInvulnerable) return;
@@ -244,38 +216,26 @@ public class GameManager : MonoBehaviour
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
             GameStats.Instance.AddDeath(currentLevelIndex);
         }
-
-        // Создаем тело игрока после смерти
         Vector3 deathPosition = _player.transform.position;
         if (deadBodyPrefab != null)
         {
             Instantiate(deadBodyPrefab, deathPosition, Quaternion.identity);
         }
-
-        // Удаляем текущего игрока
         if (_player != null)
         {
             Destroy(_player);
         }
-
-        // Запускаем респавн игрока с учетом смещения
         StartCoroutine(RespawnPlayer(deathPosition));
     }
     
     private IEnumerator RespawnPlayer(Vector3 deathPosition)
     {
-        _isInvulnerable = true; // Включаем неуязвимость
-
-        // Ждем 2 секунды перед респавном
+        _isInvulnerable = true;
         yield return new WaitForSeconds(2f);
-        
         Vector3 respawnPosition = deathPosition + offset;
-
-        // Респавним игрока
         SpawnPlayer(respawnPosition, Quaternion.identity);
-        
         yield return new WaitForSeconds(invulnerabilityDuration);
-        _isInvulnerable = false; // Выключаем неуязвимость
+        _isInvulnerable = false; 
     }
     private void SpawnPlayer(Vector3 position, Quaternion rotation)
     {

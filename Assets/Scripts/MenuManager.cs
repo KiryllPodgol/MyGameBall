@@ -6,15 +6,14 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-    [Header("UI Elements")]
-    [SerializeField] private Slider volumeSlider;
+    [Header("UI Elements")] [SerializeField]
+    private Slider volumeSlider;
+
     [SerializeField] private GameObject pauseMenu;
 
-    [Header("Results")]
-    [SerializeField] private ResultsUI resultsUI; 
+    [Header("Results")] [SerializeField] private ResultsUI resultsUI;
 
-    [Header("Settings")]
-    [SerializeField] private bool Pausable = true;
+    [Header("Settings")] [SerializeField] private bool Pausable = true;
 
     private InputAsset _input;
     private bool isPaused = false;
@@ -29,10 +28,10 @@ public class MenuManager : MonoBehaviour
 
     private void Start()
     {
-         Time.timeScale = 1f;
+        Time.timeScale = 1f;
         // Инициализация громкости
         float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0f);
-        
+
         if (volumeSlider != null)
         {
             volumeSlider.value = savedVolume;
@@ -43,6 +42,7 @@ public class MenuManager : MonoBehaviour
         {
             pauseMenu.SetActive(false);
         }
+
         GameEvents.VolumeChanged(savedVolume);
     }
 
@@ -75,7 +75,7 @@ public class MenuManager : MonoBehaviour
         GameEvents.VolumeChanged(volume);
         PlayerPrefs.SetFloat(VolumePrefKey, volume);
         PlayerPrefs.Save();
-        
+
         Debug.Log($"Volume updated to {volume}");
     }
 
@@ -123,13 +123,6 @@ public class MenuManager : MonoBehaviour
 
     public void LoadScene(int sceneIndex)
     {
-        if (sceneIndex >= 0 && sceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneTransition.SwitchSceneWithLoading(sceneIndex);
-        }
-        else
-        {
-            Debug.LogError("Scene index out of range!");
-        }
+        SceneLoader.LoadScene(sceneIndex);
     }
 }
