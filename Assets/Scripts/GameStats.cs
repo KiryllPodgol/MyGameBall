@@ -87,6 +87,10 @@ public class GameStats : MonoBehaviour
     {
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].coinsCollected += coins;
+        Debug.Log($"[GameStats] Добавлено {coins} монет, всего: {levels[levelIndex].coinsCollected}");
+
+        GameEvents.RaiseCoinsUpdated(levels[levelIndex].coinsCollected);
+        
     }
 
     private int ConvertIndex(int sceneIndex)

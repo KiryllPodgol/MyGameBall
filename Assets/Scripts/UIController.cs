@@ -1,32 +1,35 @@
 using UnityEngine;
 using TMPro;
+
 public class UIController : MonoBehaviour
 {
     [SerializeField] private GameObject panelScore;
-    [SerializeField] private TMP_Text scoreText; 
-    private int coinCount = 0;
+    [SerializeField] private TMP_Text scoreText;
 
     private void OnEnable()
     {
-        GameEvents.OnCollectibleCollected += UpdatePanelScore;
+        Debug.Log("[UIController] Подписка на OnCoinsUpdated");
+        GameEvents.OnCoinsUpdated += UpdatePanelScore;
     }
 
     private void OnDisable()
     {
-        GameEvents.OnCollectibleCollected -= UpdatePanelScore;
+        Debug.Log("[UIController] Отписка от OnCoinsUpdated");
+        GameEvents.OnCoinsUpdated -= UpdatePanelScore;
     }
 
-    private void UpdatePanelScore()
+    private void UpdatePanelScore(int newCoinCount)
     {
+        Debug.Log($"[UIController] UpdatePanelScore вызван с {newCoinCount}");
+
         if (panelScore != null)
         {
             panelScore.SetActive(true);
         }
 
-        coinCount++;
         if (scoreText != null)
         {
-            scoreText.text = $"Монеты: {coinCount}";
+            scoreText.text = $"Монеты: {newCoinCount}";
         }
     }
 }

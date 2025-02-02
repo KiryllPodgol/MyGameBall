@@ -9,6 +9,12 @@ public static class GameEvents
     {
         OnCollectibleCollected?.Invoke();
     }
+    public static event Action<int> OnCoinsUpdated;
+
+    public static void RaiseCoinsUpdated(int newCoinCount)
+    {
+        OnCoinsUpdated?.Invoke(newCoinCount);
+    }
     
     public static event Action<float> OnVolumeChanged;
 
