@@ -22,7 +22,6 @@ public class GameStats : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     public void ResetStats()
     {
         levels = new LevelStats[numberOfLevels];
@@ -77,20 +76,17 @@ public class GameStats : MonoBehaviour
     public void AddRestart(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
-        
-        // Увеличиваем количество рестартов
         levels[levelIndex].restarts++;
+        levels[levelIndex].coinsCollected = 0;
         
     }
 
-    public void AddCoins(int sceneIndex, int coins)
+    public int AddCoins(int sceneIndex, int coins)
     {
         int levelIndex = ConvertIndex(sceneIndex);
         levels[levelIndex].coinsCollected += coins;
         Debug.Log($"[GameStats] Добавлено {coins} монет, всего: {levels[levelIndex].coinsCollected}");
-
-        GameEvents.RaiseCoinsUpdated(levels[levelIndex].coinsCollected);
-        
+        return levels[levelIndex].coinsCollected; 
     }
 
     private int ConvertIndex(int sceneIndex)

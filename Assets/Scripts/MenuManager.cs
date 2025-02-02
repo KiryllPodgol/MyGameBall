@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,7 +15,8 @@ public class MenuManager : MonoBehaviour
     [Header("Results")] [SerializeField] private ResultsUI resultsUI;
 
     [Header("Settings")] [SerializeField] private bool Pausable = true;
-
+    // [SerializeField] AudioMixer mixer;
+    
     private InputAsset _input;
     private bool isPaused = false;
 
@@ -42,7 +44,7 @@ public class MenuManager : MonoBehaviour
         {
             pauseMenu.SetActive(false);
         }
-
+     
         GameEvents.VolumeChanged(savedVolume);
     }
 

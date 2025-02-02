@@ -8,22 +8,6 @@ public class Portal : MonoBehaviour
     [SerializeField] private int nextLevelIndex = -1;
 
     private bool isActivated = false; 
-
-    private void Start()
-    {
-        GameEvents.OnCollectibleCollected += AddCoin;
-    }
-
-    private void OnDestroy()
-    {
-        GameEvents.OnCollectibleCollected -= AddCoin;
-    }
-
-    private void AddCoin()
-    {
-        _coins++; 
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (!isActivated && other.GetComponent<Ball>() != null)
