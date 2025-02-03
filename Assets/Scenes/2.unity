@@ -259,6 +259,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4376356107609855465, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
+      propertyPath: mixer
+      value: 
+      objectReference: {fileID: 24300002, guid: bb6396e979bc5cb48a39186082281bfc, type: 2}
+    - target: {fileID: 4376356107609855465, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: volumeSlider
       value: 
       objectReference: {fileID: 1042361126}
@@ -318,6 +322,10 @@ PrefabInstance:
       propertyPath: m_PlayOnAwake
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7138937919834190967, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: bb6396e979bc5cb48a39186082281bfc, type: 2}
     - target: {fileID: 7301216005176166123, guid: fbff36aceac105749ae2e0e503dd82ad, type: 3}
       propertyPath: m_verticalMapping
       value: 0
@@ -454,7 +462,7 @@ AudioSource:
   m_GameObject: {fileID: 259477303}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: bb6396e979bc5cb48a39186082281bfc, type: 2}
   m_audioClip: {fileID: 8300000, guid: aebae0e89d575dc43ae340319487ef87, type: 3}
   m_Resource: {fileID: 8300000, guid: aebae0e89d575dc43ae340319487ef87, type: 3}
   m_PlayOnAwake: 0

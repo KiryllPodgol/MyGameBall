@@ -9,20 +9,15 @@ public class MenuManager : MonoBehaviour
 {
     [Header("UI Elements")] [SerializeField]
     private Slider volumeSlider;
-
     [SerializeField] private GameObject pauseMenu;
-
     [Header("Results")] [SerializeField] private ResultsUI resultsUI;
-
     [Header("Settings")] [SerializeField] private bool Pausable = true;
-    // [SerializeField] AudioMixer mixer;
+    [SerializeField] AudioMixerGroup mixer;
     
     private InputAsset _input;
     private bool isPaused = false;
-
     private const string VolumePrefKey = "MusicVolume";
-
-
+    
     private void Awake()
     {
         _input = new InputAsset();
@@ -31,7 +26,6 @@ public class MenuManager : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1f;
-        // Инициализация громкости
         float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0f);
 
         if (volumeSlider != null)
@@ -44,8 +38,7 @@ public class MenuManager : MonoBehaviour
         {
             pauseMenu.SetActive(false);
         }
-     
-        GameEvents.VolumeChanged(savedVolume);
+        UpdateVolume(savedVolume);
     }
 
     private void OnEnable()
@@ -68,16 +61,16 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Pause is disabled for this scene.");
+            // Debug.Log("Pause is disabled for this scene.");
         }
     }
 
     public void UpdateVolume(float volume)
     {
-        GameEvents.VolumeChanged(volume);
+        float volumeDb = (volume > 0.0001f) ? Mathf.Log10(volume) * 20f : -80f;
+        mixer.audioMixer.SetFloat("MasterVolume", volumeDb);
         PlayerPrefs.SetFloat(VolumePrefKey, volume);
         PlayerPrefs.Save();
-
         Debug.Log($"Volume updated to {volume}");
     }
 
@@ -88,29 +81,27 @@ public class MenuManager : MonoBehaviour
 
     public void TogglePause()
     {
-        isPaused = !isPaused;
+        isPaused = !isPaused; // Переключаем состояние паузы
+
         Time.timeScale = isPaused ? 0 : 1;
-
-        if (isPaused)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        Debug.Log($"TogglePause: isPaused = {isPaused}, Time.timeScale = {Time.timeScale}");
+        Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isPaused;
 
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(isPaused);
-            Debug.Log($"Pause menu is now {(isPaused ? "active" : "inactive")}.");
+        }
+
+        Debug.Log($"TogglePause: isPaused = {isPaused}, Time.timeScale = {Time.timeScale}");
+    }
+    
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus) 
+        {
+            TogglePause();
         }
     }
-
     public void ResetStats()
     {
         GameStats.Instance.ResetStats();
@@ -122,7 +113,6 @@ public class MenuManager : MonoBehaviour
         if (resultsUI != null)
             resultsUI.UpdateResults();
     }
-
     public void LoadScene(int sceneIndex)
     {
         SceneLoader.LoadScene(sceneIndex);
