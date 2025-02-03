@@ -97,7 +97,7 @@ public class MenuManager : MonoBehaviour
     
     private void OnApplicationFocus(bool hasFocus)
     {
-        if (!hasFocus) 
+        if (!hasFocus && Pausable && !isPaused)
         {
             TogglePause();
         }
