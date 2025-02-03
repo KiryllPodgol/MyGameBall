@@ -81,7 +81,7 @@ public class MenuManager : MonoBehaviour
 
     public void TogglePause()
     {
-        isPaused = !isPaused; // Переключаем состояние паузы
+        isPaused = !isPaused;
 
         Time.timeScale = isPaused ? 0 : 1;
         Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;

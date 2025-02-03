@@ -14,7 +14,6 @@ public class Ball : MonoBehaviour
     [SerializeField] private float decelerationRate = 2f; // Скорость замедления
     [SerializeField] private float movementResistanceRate = 0.1f;
     private float _originalFixedDeltaTime;
-    private bool _isSlowMotion = false;
     private Vector3 _moveDirection;
     private CameraFollow _cameraFollow;
     private bool _isGrounded;
@@ -43,24 +42,7 @@ private void OnEnable()
     _input.Gameplay.Jump.performed += JumpOnPerformed;
     _input.Gameplay.Run.performed += RunOnPerformed;
     _input.Gameplay.Run.canceled += RunOnCanceled;
-    _input.Gameplay.SlowMotion.performed += SlowMotionOnperformed;
-    _input.Gameplay.SlowMotion.canceled += SlowMotionOncanceled;
 }
-private void SlowMotionOnperformed(InputAction.CallbackContext obj)
-{
-    _isSlowMotion = true;
-    Time.timeScale = 0.2f;
-    Time.fixedDeltaTime = _originalFixedDeltaTime * Time.timeScale;
-}
-
-private void SlowMotionOncanceled(InputAction.CallbackContext obj)
-{
-    _isSlowMotion = false;
-    Time.timeScale = 1f; 
-    Time.fixedDeltaTime = _originalFixedDeltaTime; 
-}
-
-
 private void OnDisable()
 {
     _input.Gameplay.Move.performed -= OnMovePerformed;
@@ -68,8 +50,6 @@ private void OnDisable()
     _input.Gameplay.Jump.performed -= JumpOnPerformed;
     _input.Gameplay.Run.performed -= RunOnPerformed;
     _input.Gameplay.Run.canceled -= RunOnCanceled;
-    _input.Gameplay.SlowMotion.performed -= SlowMotionOnperformed;
-    _input.Gameplay.SlowMotion.canceled -= SlowMotionOncanceled;
     _input.Gameplay.Disable();
 }
 
@@ -145,8 +125,6 @@ private void CheckGround()
     RaycastHit hit;
     float sphereRadius = 0.5f; // Радиус сферы
     _isGrounded = Physics.SphereCast(transform.position, sphereRadius, Vector3.down, out hit, groundCheckDistance, groundLayer);
-
-
     Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, _isGrounded ? Color.green : Color.red);
 }
 }
