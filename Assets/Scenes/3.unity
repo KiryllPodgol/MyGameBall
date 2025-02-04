@@ -73561,7 +73561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 724376796}
-  Sensativity: {fileID: 0}
+  Sensativity: {fileID: 1026060974}
   pauseMenu: {fileID: 1039658617}
   resultsUI: {fileID: 0}
   Pausable: 1
