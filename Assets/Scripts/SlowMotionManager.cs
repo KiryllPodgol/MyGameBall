@@ -14,6 +14,7 @@ public class SlowMotionManager : MonoBehaviour
     private InputAsset _input;
     private Coroutine _vignetteCoroutine;
     private Coroutine _slowMotionCoroutine;
+    private float fixedUnscaledTime;
 
     public bool IsSlowMotionActive;
 
@@ -28,6 +29,7 @@ public class SlowMotionManager : MonoBehaviour
         {
             Debug.LogWarning("Виньетка не найдена в профиле постпроцессинга!");
         }
+        fixedUnscaledTime = Time.fixedUnscaledTime;
     }
 
     private void OnEnable()
@@ -76,11 +78,14 @@ public class SlowMotionManager : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            Time.timeScale = Mathf.Lerp(startScale, targetTimeScale, elapsed / duration);
+            float value = Mathf.Lerp(startScale, targetTimeScale, elapsed / duration);
+            Time.timeScale = value;
+            Time.fixedDeltaTime = Time.unscaledDeltaTime * value;
             yield return null;
         }
 
         Time.timeScale = targetTimeScale;
+        Time.fixedDeltaTime = Time.unscaledDeltaTime * targetTimeScale;
     }
 
     private IEnumerator SmoothVignetteIntensity(float targetIntensity, float duration)

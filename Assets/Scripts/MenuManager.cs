@@ -7,40 +7,49 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-    [Header("UI Elements")] [SerializeField]
+    [Header("UI Elements")] 
+    [SerializeField]
     private Slider volumeSlider;
+    [SerializeField]
+    private Slider Sensativity;
     [SerializeField] private GameObject pauseMenu;
     [Header("Results")] [SerializeField] private ResultsUI resultsUI;
     [Header("Settings")] [SerializeField] private bool Pausable = true;
     [SerializeField] AudioMixerGroup mixer;
-    
     private InputAsset _input;
     private bool isPaused = false;
     private const string VolumePrefKey = "MusicVolume";
+    private const string SensitivityPrefKey = "MouseSensitivity"; 
     
     private void Awake()
     {
         _input = new InputAsset();
     }
-
     private void Start()
     {
         Time.timeScale = 1f;
+
         float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 0f);
+        float savedSensitivity = PlayerPrefs.GetFloat(SensitivityPrefKey, 100f);
 
         if (volumeSlider != null)
         {
             volumeSlider.value = savedVolume;
             volumeSlider.onValueChanged.AddListener(UpdateVolume);
         }
-
+        
+        if (Sensativity != null)
+        {
+            Sensativity.value = savedSensitivity;
+            Sensativity.onValueChanged.AddListener(UpdateSensitivity);
+        }
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
+
         UpdateVolume(savedVolume);
     }
-
     private void OnEnable()
     {
         _input.UI.Pause.performed += OnPausePressed;
@@ -72,6 +81,13 @@ public class MenuManager : MonoBehaviour
         PlayerPrefs.SetFloat(VolumePrefKey, volume);
         PlayerPrefs.Save();
         Debug.Log($"Volume updated to {volume}");
+    }
+    public void UpdateSensitivity(float value)
+    {
+        GameEvents.ChangeSensitivity(value);
+        PlayerPrefs.SetFloat(SensitivityPrefKey, value);
+        PlayerPrefs.Save();
+        Debug.Log($"Sensitivity updated to: {value}");
     }
 
     public void ExitApplication()

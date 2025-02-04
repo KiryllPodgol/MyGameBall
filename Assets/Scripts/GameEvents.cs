@@ -15,6 +15,13 @@ public static class GameEvents
     {
         OnCoinsUpdated?.Invoke(newCoinCount);
     }
+    public static event Action<float> OnSensitivityChanged;
+
+    public static void ChangeSensitivity(float value)
+    {
+        OnSensitivityChanged?.Invoke(value);
+    }
+
     
     public static event Action<float> OnVolumeChanged;
 

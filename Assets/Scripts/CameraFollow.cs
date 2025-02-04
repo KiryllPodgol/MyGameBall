@@ -13,9 +13,23 @@ public class CameraFollow : MonoBehaviour
     private Transform _target;
     private float _yaw = 0f;
     private float _pitch = 0f;
+    private void OnEnable()
+    {
+        GameEvents.OnSensitivityChanged += SetSensitivity;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnSensitivityChanged -= SetSensitivity;
+    }
+
+    private void SetSensitivity(float value)
+    {
+        mouseSensitivity = value;
+    }
     private void Start()
     {
-       
+        
         UpdateCursorState();
     }
     private void UpdateCursorState()

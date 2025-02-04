@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Main Camera Profile
   m_EditorClassIdentifier: 
   settings:
-  - {fileID: 7710476813106522725}
---- !u!114 &7710476813106522725
+  - {fileID: 1375401120526865143}
+--- !u!114 &1375401120526865143
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -34,22 +34,22 @@ MonoBehaviour:
     overrideState: 0
     value: 0
   color:
-    overrideState: 1
-    value: {r: 1, g: 0, b: 0, a: 1}
+    overrideState: 0
+    value: {r: 0, g: 0, b: 0, a: 1}
   center:
     overrideState: 0
     value: {x: 0.5, y: 0.5}
   intensity:
-    overrideState: 1
-    value: 1
+    overrideState: 0
+    value: 0
   smoothness:
-    overrideState: 1
-    value: 0.67
+    overrideState: 0
+    value: 0.2
   roundness:
     overrideState: 0
-    value: 0.239
+    value: 1
   rounded:
-    overrideState: 1
+    overrideState: 0
     value: 0
   mask:
     overrideState: 0
