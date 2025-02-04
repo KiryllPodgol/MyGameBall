@@ -9,7 +9,7 @@ public class ResultsUI : MonoBehaviour
     private List<LevelResult> levelResultInstances = new List<LevelResult>();
 
     private void Start()
-    { 
+    {
         UpdateResults();
     }
 
@@ -17,7 +17,7 @@ public class ResultsUI : MonoBehaviour
     {
         if (GameStats.Instance != null && levelResultPrefab != null && resultsContainer != null)
         {
-            // Удаляем старые префабы
+           
             foreach (var instance in levelResultInstances)
             {
                 Destroy(instance.gameObject);
@@ -25,12 +25,12 @@ public class ResultsUI : MonoBehaviour
 
             levelResultInstances.Clear();
 
-            int levelsToShow = GameStats.Instance.levels.Length;
+            int levelsToShow = GameStats.Instance.data.numberOfLevels;
             float height = 100f;
 
             for (int i = 0; i < levelsToShow; i++)
             {
-                var levelStats = GameStats.Instance.levels[i];
+                var levelStats = GameStats.Instance.data.levels[i];
                 LevelResult levelResult = Instantiate(levelResultPrefab, resultsContainer);
                 levelResult.SetLevelResult(levelStats, i);
                 levelResultInstances.Add(levelResult);

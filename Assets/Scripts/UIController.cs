@@ -8,13 +8,13 @@
         [SerializeField] private TMP_Text scoreText;
         private void OnEnable()
         {
-            Debug.Log("[UIController] Подписка на OnCoinsUpdated");
+            // Debug.Log("[UIController] Подписка на OnCoinsUpdated");
          
             GameEvents.OnCollectibleCollected += AddCoins;
         }
         private void OnDisable()
         {
-            Debug.Log("[UIController] Отписка от OnCoinsUpdated");
+            // Debug.Log("[UIController] Отписка от OnCoinsUpdated");
             GameEvents.OnCollectibleCollected -= AddCoins;
         }
         private void AddCoins()
@@ -26,7 +26,7 @@
         }
         private void UpdatePanelScore(int newCoinCount)
         {
-            Debug.Log($"[UIController] UpdatePanelScore вызван с {newCoinCount}");
+            // Debug.Log($"[UIController] UpdatePanelScore вызван с {newCoinCount}");
 
             if (panelScore != null)
             {

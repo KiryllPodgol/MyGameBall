@@ -1696,7 +1696,7 @@ MonoBehaviour:
   pauseMenu: {fileID: 0}
   resultsUI: {fileID: 0}
   Pausable: 0
-  mixer: {fileID: 0}
+  mixer: {fileID: 24300002, guid: bb6396e979bc5cb48a39186082281bfc, type: 2}
 --- !u!1 &1802823058
 GameObject:
   m_ObjectHideFlags: 0
