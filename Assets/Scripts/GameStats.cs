@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 
@@ -10,9 +11,9 @@ public class GameStats : MonoBehaviour
     public GameStatsData data;
     private float levelStartTime;
     private bool[] firstEntry;
-    private const string EncryptionKey = "apsfjkawjjw123dfk";
 
     private string SaveFilePath => Path.Combine(Application.persistentDataPath, "game_stats.json");
+    private string BackupFilePath => SaveFilePath + ".bak";
 
     private void Awake()
     {
@@ -27,6 +28,7 @@ public class GameStats : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     public void ResetStats()
     {
         data = new GameStatsData(DefaultNumberOfLevels);
@@ -117,7 +119,13 @@ public class GameStats : MonoBehaviour
         try
         {
             string json = JsonUtility.ToJson(data, true);
-            string encryptedJson = XOREncryptDecrypt(json, EncryptionKey);
+            string encryptedJson = EncryptAES(json, GenerateDynamicKey());
+
+            // бэкап
+            if (File.Exists(SaveFilePath))
+            {
+                File.Copy(SaveFilePath, BackupFilePath, true);
+            }
             File.WriteAllText(SaveFilePath, encryptedJson);
             Debug.Log($"[GameStats] Статистика сохранена в {SaveFilePath}");
         }
@@ -131,6 +139,14 @@ public class GameStats : MonoBehaviour
     {
         LoadStatsFromFile();
     }
+    private bool IsBase64String(string input)
+    {
+        if (input == null)
+            return false;
+    
+        Span<byte> buffer = new Span<byte>(new byte[input.Length * 3 / 4]);
+        return Convert.TryFromBase64String(input, buffer, out int bytesParsed);
+    }
 
     private void LoadStatsFromFile()
     {
@@ -139,21 +155,45 @@ public class GameStats : MonoBehaviour
             try
             {
                 string encryptedJson = File.ReadAllText(SaveFilePath);
-                Debug.Log("[GameStats] Зашифрованные данные из файла: " + encryptedJson);
+                if (string.IsNullOrWhiteSpace(encryptedJson))
+                {
+                    throw new Exception("Файл статистики пуст.");
+                }
+                if (IsBase64String(encryptedJson))
+                {
+                    // Попытка расшифровки
+                    string json = DecryptAES(encryptedJson, GenerateDynamicKey());
 
-                string json = XOREncryptDecrypt(encryptedJson, EncryptionKey);
-                Debug.Log("[GameStats] JSON после расшифровки: " + json);
+                    // Проверяем на корректность JSON
+                    if (string.IsNullOrWhiteSpace(json))
+                    {
+                        throw new Exception("Расшифрованный JSON пуст.");
+                    }
 
-                data = JsonUtility.FromJson<GameStatsData>(json);
-                Debug.Log($"[GameStats] Статистика загружена из {SaveFilePath}");
+                    data = JsonUtility.FromJson<GameStatsData>(json);
+                    Debug.Log($"[GameStats] Статистика загружена из {SaveFilePath}");
+                }
+                else
+                {
+                    throw new Exception("Ошибка формата Base64: Некорректный формат данных.");
+                }
             }
             catch (Exception e)
             {
                 Debug.LogError($"[GameStats] Ошибка загрузки: {e.Message}");
-                File.Delete(SaveFilePath);
-                Debug.Log("[GameStats] Старый файл удален.");
 
-                ResetStats();
+                // Если ошибка, восстанавливаем из бэкапа
+                if (File.Exists(BackupFilePath))
+                {
+                    File.Copy(BackupFilePath, SaveFilePath, true);
+                    Debug.Log("[GameStats] Восстановление из бэкапа...");
+                    LoadStatsFromFile();
+                }
+                else
+                {
+                    Debug.LogError("[GameStats] Бэкап не найден. Сброс статистики.");
+                    ResetStats();
+                }
             }
         }
         else
@@ -163,14 +203,72 @@ public class GameStats : MonoBehaviour
         }
     }
 
-    private string XOREncryptDecrypt(string input, string key)
+
+    private string GenerateDynamicKey()
     {
-        StringBuilder output = new StringBuilder(input.Length);
-        for (int i = 0; i < input.Length; i++)
+        string deviceId = SystemInfo.deviceUniqueIdentifier;
+        string appKey = "SpecificKey";
+        return Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(deviceId + appKey)))
+            .Substring(0, 32);
+    }
+
+    private string EncryptAES(string plainText, string key)
+    {
+        byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+        byte[] ivBytes = new byte[16];
+        Array.Copy(keyBytes, ivBytes, Math.Min(keyBytes.Length, ivBytes.Length));
+
+        using (Aes aes = Aes.Create())
         {
-            output.Append((char)(input[i] ^ key[i % key.Length]));
+            aes.Key = keyBytes;
+            aes.IV = ivBytes;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+
+            using (ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
+            {
+                byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+                byte[] encryptedBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+                return Convert.ToBase64String(encryptedBytes);
+            }
+        }
+    }
+
+    private string DecryptAES(string encryptedText, string key)
+    {
+        if (string.IsNullOrWhiteSpace(encryptedText))
+        {
+            throw new ArgumentException("Входной текст для дешифровки пуст или некорректен.");
         }
 
-        return output.ToString();
+        byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+        byte[] ivBytes = new byte[16];
+        Array.Copy(keyBytes, ivBytes, Math.Min(keyBytes.Length, ivBytes.Length));
+
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = keyBytes;
+            aes.IV = ivBytes;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+
+            try
+            {
+                using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                {
+                    byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+                    byte[] plainBytes = decryptor.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
+                    return Encoding.UTF8.GetString(plainBytes);
+                }
+            }
+            catch (FormatException e)
+            {
+                throw new FormatException($"Ошибка формата Base64: {e.Message}");
+            }
+            catch (CryptographicException e)
+            {
+                throw new CryptographicException($"Ошибка расшифровки: {e.Message}");
+            }
+        }
     }
 }
