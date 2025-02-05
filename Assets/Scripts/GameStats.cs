@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 public class GameStats : MonoBehaviour
@@ -8,7 +10,8 @@ public class GameStats : MonoBehaviour
     public GameStatsData data;
     private float levelStartTime;
     private bool[] firstEntry;
-    
+    private const string EncryptionKey = "apsfjkawjjw123dfk";
+
     private string SaveFilePath => Path.Combine(Application.persistentDataPath, "game_stats.json");
 
     private void Awake()
@@ -24,10 +27,9 @@ public class GameStats : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     public void ResetStats()
     {
-        data = new GameStatsData(DefaultNumberOfLevels); 
+        data = new GameStatsData(DefaultNumberOfLevels);
         firstEntry = new bool[data.numberOfLevels];
 
         for (int i = 0; i < firstEntry.Length; i++)
@@ -54,7 +56,7 @@ public class GameStats : MonoBehaviour
         int levelIndex = ConvertIndex(sceneIndex);
         data.levels[levelIndex].levelTime = Time.time - levelStartTime;
         data.levels[levelIndex].score = CalculateLevelScore(levelIndex);
-        SaveStatsToFile(); 
+        SaveStatsToFile();
     }
 
     public void AddDeath(int sceneIndex)
@@ -67,9 +69,9 @@ public class GameStats : MonoBehaviour
     {
         int levelIndex = ConvertIndex(sceneIndex);
         data.levels[levelIndex].coinsCollected += coins;
-        // Debug.Log($"[GameStats] Добавлено {coins} монет, всего: {data.levels[levelIndex].coinsCollected}");
         return data.levels[levelIndex].coinsCollected;
     }
+
     public void AddRestart(int sceneIndex)
     {
         int levelIndex = ConvertIndex(sceneIndex);
@@ -115,7 +117,8 @@ public class GameStats : MonoBehaviour
         try
         {
             string json = JsonUtility.ToJson(data, true);
-            File.WriteAllText(SaveFilePath, json);
+            string encryptedJson = XOREncryptDecrypt(json, EncryptionKey);
+            File.WriteAllText(SaveFilePath, encryptedJson);
             Debug.Log($"[GameStats] Статистика сохранена в {SaveFilePath}");
         }
         catch (IOException e)
@@ -128,20 +131,28 @@ public class GameStats : MonoBehaviour
     {
         LoadStatsFromFile();
     }
- 
-private void LoadStatsFromFile()
+
+    private void LoadStatsFromFile()
     {
         if (File.Exists(SaveFilePath))
         {
             try
             {
-                string json = File.ReadAllText(SaveFilePath);
+                string encryptedJson = File.ReadAllText(SaveFilePath);
+                Debug.Log("[GameStats] Зашифрованные данные из файла: " + encryptedJson);
+
+                string json = XOREncryptDecrypt(encryptedJson, EncryptionKey);
+                Debug.Log("[GameStats] JSON после расшифровки: " + json);
+
                 data = JsonUtility.FromJson<GameStatsData>(json);
                 Debug.Log($"[GameStats] Статистика загружена из {SaveFilePath}");
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 Debug.LogError($"[GameStats] Ошибка загрузки: {e.Message}");
+                File.Delete(SaveFilePath);
+                Debug.Log("[GameStats] Старый файл удален.");
+
                 ResetStats();
             }
         }
@@ -150,5 +161,16 @@ private void LoadStatsFromFile()
             Debug.Log("[GameStats] Файл статистики не найден. Создана новая статистика.");
             ResetStats();
         }
+    }
+
+    private string XOREncryptDecrypt(string input, string key)
+    {
+        StringBuilder output = new StringBuilder(input.Length);
+        for (int i = 0; i < input.Length; i++)
+        {
+            output.Append((char)(input[i] ^ key[i % key.Length]));
+        }
+
+        return output.ToString();
     }
 }
