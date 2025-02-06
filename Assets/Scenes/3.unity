@@ -19441,7 +19441,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9433c4329184d834db61a2b958fbe65b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelScore: {fileID: 542655904}
   scoreText: {fileID: 244043679}
 --- !u!1 &242905318
 GameObject:
@@ -20016,7 +20015,7 @@ RectTransform:
   m_Father: {fileID: 87476984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -20505,9 +20504,9 @@ RectTransform:
   - {fileID: 724376795}
   m_Father: {fileID: 1039658618}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -220, y: -343}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -218.4, y: 194}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &431496892
@@ -20935,7 +20934,7 @@ RectTransform:
   m_Father: {fileID: 1590166443}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -22854,7 +22853,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 233.7, y: 0.80000305}
+  m_AnchoredPosition: {x: 237, y: 0}
   m_SizeDelta: {x: 400, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &724376796
@@ -23902,7 +23901,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1039658618
 RectTransform:
   m_ObjectHideFlags: 0
@@ -42540,7 +42539,7 @@ RectTransform:
   m_Father: {fileID: 2047484157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -73333,7 +73332,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 16.999939, y: 134.99998}
+  m_AnchoredPosition: {x: 19, y: 139}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2047484156
@@ -73561,10 +73560,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 724376796}
-  Sensativity: {fileID: 1026060974}
+  sensativity: {fileID: 1026060974}
   pauseMenu: {fileID: 1039658617}
   resultsUI: {fileID: 0}
-  Pausable: 1
+  pausable: 1
   mixer: {fileID: 24300002, guid: bb6396e979bc5cb48a39186082281bfc, type: 2}
 --- !u!1 &2131542662
 GameObject:
