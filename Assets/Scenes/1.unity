@@ -11420,9 +11420,9 @@ RectTransform:
   - {fileID: 2093123460}
   m_Father: {fileID: 721215584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -220, y: -343}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -220, y: 194}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &996087377
@@ -21141,7 +21141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9433c4329184d834db61a2b958fbe65b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelScore: {fileID: 2106736575}
   scoreText: {fileID: 319552215}
 --- !u!4 &1997235606 stripped
 Transform:
@@ -21889,7 +21888,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 234, y: -0.9999695}
+  m_AnchoredPosition: {x: 235, y: 0}
   m_SizeDelta: {x: 400, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2093123461

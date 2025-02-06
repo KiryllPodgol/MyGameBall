@@ -37,12 +37,11 @@ private const int DefaultNumberOfLevels = 3;
 
     private void Awake()
     {
-        ResetStats();
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadStatsFromFile();
+            ResetStats();
         }
         else
         {
@@ -142,22 +141,58 @@ private const int DefaultNumberOfLevels = 3;
     {
         try
         {
-            string json = JsonUtility.ToJson(data, true);
-            string encryptedJson = EncryptAES(json, GenerateDynamicKey());
-
-            // бэкап
+            // Загружаем старые данные перед сохранением
+            GameStatsData oldData = null;
             if (File.Exists(SaveFilePath))
             {
-                File.Copy(SaveFilePath, BackupFilePath, true);
+                try
+                {
+                    string oldEncryptedJson = File.ReadAllText(SaveFilePath);
+                    string oldJson = DecryptAES(oldEncryptedJson, GenerateDynamicKey());
+                    oldData = JsonUtility.FromJson<GameStatsData>(oldJson);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"[GameStats] Ошибка загрузки старых данных: {e.Message}");
+                }
             }
 
-            File.WriteAllText(SaveFilePath, encryptedJson);
-            Debug.Log($"[GameStats] Статистика сохранена в {SaveFilePath}");
+            // Если старых данных нет, просто сохраняем текущие
+            if (oldData == null)
+            {
+                SaveNewStats();
+                return;
+            }
+            
+            for (int i = 0; i < data.levels.Length; i++)
+            {
+                if (data.levels[i].score > oldData.levels[i].score)
+                {
+                    oldData.levels[i] = data.levels[i];
+                }
+            }
+            
+            data = oldData;
+            SaveNewStats();
         }
         catch (IOException e)
         {
             Debug.LogError($"[GameStats] Ошибка сохранения: {e.Message}");
         }
+    }
+    private void SaveNewStats()
+    {
+        string json = JsonUtility.ToJson(data, true);
+        string encryptedJson = EncryptAES(json, GenerateDynamicKey());
+
+        // Создаём бэкап перед записью
+        if (File.Exists(SaveFilePath))
+        {
+            File.Copy(SaveFilePath, BackupFilePath, true);
+        }
+
+        File.WriteAllText(SaveFilePath, encryptedJson);
+        Debug.Log($"[GameStats] Статистика сохранена в {SaveFilePath}");
     }
 
     public void LoadStats()
