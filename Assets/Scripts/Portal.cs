@@ -22,8 +22,8 @@ public class Portal : MonoBehaviour
        
         if (GameStats.Instance != null)
         {
+            GameStats.Instance.AddCoins(_coins);
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-            GameStats.Instance.AddCoins(currentLevelIndex, _coins);
             GameStats.Instance.EndLevel(currentLevelIndex); 
         }
         

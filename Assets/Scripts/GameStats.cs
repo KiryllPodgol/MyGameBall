@@ -3,23 +3,44 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameStats : MonoBehaviour
 {
-    public static GameStats Instance;
-    private const int DefaultNumberOfLevels = 3;
+    private static GameStats instance;
+
+    public static GameStats Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+            var go = new GameObject();  
+            instance = go.AddComponent<GameStats>();
+            }
+            return instance;
+        }
+    }
+
+private const int DefaultNumberOfLevels = 3;
     public GameStatsData data;
     private float levelStartTime;
     private bool[] firstEntry;
-
+    public event Action<int, int>OnNumberOfCoinsChanged;
     private string SaveFilePath => Path.Combine(Application.persistentDataPath, "game_stats.json");
     private string BackupFilePath => SaveFilePath + ".bak";
 
+    public int CurrentLevel
+    {
+        get { return SceneManager.GetActiveScene().buildIndex; }
+    }
+
     private void Awake()
     {
-        if (Instance == null)
+        ResetStats();
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
             LoadStatsFromFile();
         }
@@ -67,11 +88,14 @@ public class GameStats : MonoBehaviour
         data.levels[levelIndex].deaths++;
     }
 
-    public int AddCoins(int sceneIndex, int coins)
+    public int AddCoins(int coins)
     {
+        int sceneIndex = CurrentLevel;
         int levelIndex = ConvertIndex(sceneIndex);
         data.levels[levelIndex].coinsCollected += coins;
-        return data.levels[levelIndex].coinsCollected;
+        int resultCoins = data.levels[levelIndex].coinsCollected;
+        OnNumberOfCoinsChanged?.Invoke(sceneIndex, resultCoins);
+        return resultCoins;
     }
 
     public void AddRestart(int sceneIndex)
@@ -126,6 +150,7 @@ public class GameStats : MonoBehaviour
             {
                 File.Copy(SaveFilePath, BackupFilePath, true);
             }
+
             File.WriteAllText(SaveFilePath, encryptedJson);
             Debug.Log($"[GameStats] Статистика сохранена в {SaveFilePath}");
         }
@@ -139,11 +164,12 @@ public class GameStats : MonoBehaviour
     {
         LoadStatsFromFile();
     }
+
     private bool IsBase64String(string input)
     {
         if (input == null)
             return false;
-    
+
         Span<byte> buffer = new Span<byte>(new byte[input.Length * 3 / 4]);
         return Convert.TryFromBase64String(input, buffer, out int bytesParsed);
     }
@@ -159,6 +185,7 @@ public class GameStats : MonoBehaviour
                 {
                     throw new Exception("Файл статистики пуст.");
                 }
+
                 if (IsBase64String(encryptedJson))
                 {
                     // Попытка расшифровки

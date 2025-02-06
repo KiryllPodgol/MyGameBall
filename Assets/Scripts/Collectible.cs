@@ -20,7 +20,7 @@
                 {
                     audioSource.PlayOneShot(collectSound);
                 }
-                GameEvents.CollectibleCollected();
+                int coincount = GameStats.Instance.AddCoins(1);
                 GetComponent<Renderer>().enabled = false;
                 Destroy(gameObject, collectSound.length);
             }
